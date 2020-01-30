@@ -1,6 +1,5 @@
 
 from Algorithm import *
-import random
 class DFS(Algorithm):
     def run(self):
         totalPath = []
@@ -20,10 +19,11 @@ class DFS(Algorithm):
         self.unVisited.append(initialNode)
         #we have our current node object
         currentNode = self.graph.makeNodeFromNumber(initialNode)
-        stack.append(currentNode.number)
+        #stack.append(currentNode.number)
         while(currentNode.number != self.endNodeNumber and len(self.unVisited) != 0):
             #pop the unvisited node off the top
-            currentNodeNumber = stack.pop(0)
+            # currentNodeNumber = stack.pop(0)
+            currentNodeNumber = self.unVisited.pop(0)
             #print("Visiting: ", currentNodeNumber)
             currentNode = self.graph.makeNodeFromNumber(currentNodeNumber)
             neighbors = self.graph.getNodeNeighbors(currentNodeNumber)
@@ -38,24 +38,22 @@ class DFS(Algorithm):
             totalPath.append(currentNode.number)
             #add the current node to the visited list
             self.visited.append(currentNode.number)
-            #assign the neighbors to the node, but then choose a node at random
-            for n in neighbors:
-                if(n in self.visited or n in self.unVisited):
-                    continue
-                currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                currentNeighborNode.parent = currentNode
-                self.unVisited.append(n)
-            #choose the first unvisited neighbor, or go to your parent
-            for n in neighbors:
-                if n not in self.visited:
-                    nextNodeToVisit = n
+            #Append to the unvisited array (our stack), the first neighbor we explore, and then break
+            for i in range(len(neighbors)):
+                if(neighbors[i] not in self.visited):
+                    currentNeighborNode = self.graph.makeNodeFromNumber(neighbors[i])
+                    currentNeighborNode.parent = currentNode
+                    self.unVisited.append(neighbors[i])
+                    nextNodeToVisit = neighbors[i]
                     break
-                nextNodeToVisit = currentNode.parent.number
-            if(nextNodeToVisit == initialNode):
+                #If you have iterated through all the nodes and we have visited them all, backtrack one:
+                if(i == len(neighbors) - 1):
+                    nextNodeToVisit = currentNode.parent.number
+            #check if we have returned to the start OR we have been stuck on the same node
+            if(nextNodeToVisit == initialNode): # or nextNodeToVisit == currentNode.number):
               #  print("Next node to visit is: ", nextNodeToVisit, ". Returned to the start.")
                 break
-            #print("Next node to visit: ", nextNodeToVisit)
-            stack.append(nextNodeToVisit)
+            print("Next node to visit: ", nextNodeToVisit)
 
         #If we have found the node
         if(currentNode.number == self.endNodeNumber):
@@ -79,5 +77,6 @@ class DFS(Algorithm):
 
 
         else:
+            print(totalPath)
             print("Could Not Find Node")
 
