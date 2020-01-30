@@ -9,6 +9,7 @@ class BFS(Algorithm):
             we have now explored the current node, so we add it to the visited queue
             We repeatedly pop the top element of the unvisited list and repeat until we reach the goal
         """
+        print("Start: ", self.startNodeNumber, "End: ", self.endNodeNumber)
         initialNode = self.startNodeNumber
         #We mark the first node as unvisited
         self.unVisited.append(initialNode)
@@ -35,7 +36,7 @@ class BFS(Algorithm):
             #List to hold final path
             finalPath = []
             #Print the total path
-            print(totalPath)
+            print("Total path taken by BFS:", totalPath)
             #We are going to look at everyone's parents
             node = currentNode
             #While the node has a parent
@@ -48,7 +49,7 @@ class BFS(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
-            print(finalPath)
+            print("Final path taken by BFS:" , finalPath)
 
 
         else:
