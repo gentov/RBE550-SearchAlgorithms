@@ -15,7 +15,7 @@ class BFS(Algorithm):
         self.unVisited.append(initialNode)
         #we have our current node object
         currentNode = self.graph.makeNodeFromNumber(initialNode)
-        while(currentNode.number != self.endNodeNumber and len(self.unVisited) != 0):
+        while(self.foundGoal != True and len(self.unVisited) != 0):
             currentNodeNumber = self.unVisited.pop(0)
             currentNode = self.graph.makeNodeFromNumber(currentNodeNumber)
             neighbors = self.graph.getNodeNeighbors(currentNodeNumber)
@@ -29,16 +29,22 @@ class BFS(Algorithm):
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
                 currentNeighborNode.parent = currentNode
                 #print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
+                #If one of the neighbors is the node we are looking for
+                if n == self.endNodeNumber:
+                    #print("Found node!")
+                    self.foundGoal = True
                 self.unVisited.append(n)
 
         #If we have found the node
-        if(currentNode.number == self.endNodeNumber):
+        if(self.foundGoal):
             #List to hold final path
             finalPath = []
             #Print the total path
             print("Total path taken by BFS:", totalPath)
             #We are going to look at everyone's parents
             node = currentNode
+            #The last visited node is the end-node's parent, append it first
+            finalPath.append(node.number)
             #While the node has a parent
             while(node.parent != None):
                 #The new node under examination is the node's parent
@@ -49,7 +55,7 @@ class BFS(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
-            print("Final path taken by BFS:" , finalPath)
+            print("Final path from start to end as found by BFS:" , finalPath)
 
 
         else:

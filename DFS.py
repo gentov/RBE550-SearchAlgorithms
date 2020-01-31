@@ -20,7 +20,7 @@ class DFS(Algorithm):
         #we have our current node object
         currentNode = self.graph.makeNodeFromNumber(initialNode)
         #stack.append(currentNode.number)
-        while(currentNode.number != self.endNodeNumber and len(self.unVisited) != 0):
+        while(self.foundGoal != True and len(self.unVisited) != 0):
             #pop the unvisited node off the top
             # currentNodeNumber = stack.pop(0)
             currentNodeNumber = self.unVisited.pop(0)
@@ -45,6 +45,8 @@ class DFS(Algorithm):
                     currentNeighborNode.parent = currentNode
                     self.unVisited.append(neighbors[i])
                     nextNodeToVisit = neighbors[i]
+                    if(nextNodeToVisit == self.endNodeNumber):
+                        self.foundGoal = True
                     break
                 #If you have iterated through all the nodes and we have visited them all, backtrack one:
                 if(i == len(neighbors) - 1):
@@ -53,10 +55,10 @@ class DFS(Algorithm):
             if(nextNodeToVisit == initialNode): # or nextNodeToVisit == currentNode.number):
               #  print("Next node to visit is: ", nextNodeToVisit, ". Returned to the start.")
                 break
-            print("Next node to visit: ", nextNodeToVisit)
+            #print("Next node to visit: ", nextNodeToVisit)
 
         #If we have found the node
-        if(currentNode.number == self.endNodeNumber):
+        if(self.foundGoal):
             #List to hold final path
             finalPath = []
             #Print the total path
@@ -73,7 +75,7 @@ class DFS(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
-            print("Final path taken by DFS:" , finalPath)
+            print("Final path from start to end as found by BFS" , finalPath)
 
 
         else:
