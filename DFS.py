@@ -65,6 +65,8 @@ class DFS(Algorithm):
             print("Total path taken by DFS:" , totalPath)
             #We are going to look at everyone's parents
             node = currentNode
+            # The last visited node is the end-node's parent, append it first
+            finalPath.append(node.number)
             #While the node has a parent
             while(node.parent != None):
                 #The new node under examination is the node's parent
@@ -75,7 +77,7 @@ class DFS(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
-            print("Final path from start to end as found by BFS" , finalPath)
+            print("Final path from start to end as found by DFS" , finalPath)
 
 
         else:
