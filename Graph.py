@@ -1,4 +1,5 @@
 from Node import *
+from tkinter import *
 class Graph():
     def __init__(self, nodesTall = 4 ,nodesWide = 4):
         self.nodesTall = nodesTall
@@ -10,8 +11,9 @@ class Graph():
         nodeNumber = 0
         for i in range(self.nodesTall):
             for j in range(self.nodesWide):
-                self.graph[i][j] = Node(number=nodeNumber)
+                self.graph[i][j] = Node(number=nodeNumber, row = i, column = j)
                 nodeNumber+=1
+
 
     def print(self):
         for i in range(self.nodesTall):

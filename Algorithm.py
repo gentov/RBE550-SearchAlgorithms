@@ -5,14 +5,25 @@ Run method (will be overwritten)
 """
 from Node import *
 from Graph import *
+from tkinter import *
+
 class Algorithm():
-    def __init__(self, graph, startNodeNumber, endNodeNumber):
-        self.graph = graph
+    def __init__(self,graph,startNodeNumber, endNodeNumber, window = None):
         self.visited = []
         self.unVisited = []
         self.finalPath = []
         self.startNodeNumber = startNodeNumber
         self.endNodeNumber = endNodeNumber
+        self.foundGoal = False
+        self.graph = graph
+        if(window is not None):
+            self.win = window
+
+    def updatePlot(self, row, col, color):
+        node = Button(self.win, height=3, width=6, command=lambda row=row, column=col: self.updatePlot(row, column), bg=color)
+        node.grid(row=row, column=col)
+        self.win.update()
+
     def run(self):
         pass
     def getPath(self):

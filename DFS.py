@@ -1,7 +1,11 @@
 
 from Algorithm import *
+import time
 class DFS(Algorithm):
+    def __init__(self, graph, startNodeNumber, endNodeNumber, window):
+            super().__init__(graph, startNodeNumber, endNodeNumber, window)
     def run(self):
+        self.foundGoal = False
         totalPath = []
         stack = []
         """
@@ -21,9 +25,13 @@ class DFS(Algorithm):
         currentNode = self.graph.makeNodeFromNumber(initialNode)
         #stack.append(currentNode.number)
         while(self.foundGoal != True and len(self.unVisited) != 0):
+            time.sleep(.05)
             #pop the unvisited node off the top
             # currentNodeNumber = stack.pop(0)
             currentNodeNumber = self.unVisited.pop(0)
+            (row, col) = self.graph.getNodeIndexes(currentNodeNumber)
+            if (currentNodeNumber != self.startNodeNumber):
+                self.updatePlot(row, col, "pink")
             #print("Visiting: ", currentNodeNumber)
             currentNode = self.graph.makeNodeFromNumber(currentNodeNumber)
             neighbors = self.graph.getNodeNeighbors(currentNodeNumber)
@@ -78,7 +86,10 @@ class DFS(Algorithm):
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
             print("Final path from start to end as found by DFS" , finalPath)
-
+            for node in finalPath[1:-1]:
+                (row, col) = self.graph.getNodeIndexes(node)
+                time.sleep(.05)
+                self.updatePlot(row, col, "blue")
 
         else:
             print(totalPath)

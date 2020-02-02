@@ -1,8 +1,8 @@
 from Algorithm import *
 import random
-class Dijkstra(Algorithm):
-    def __init__(self, startNodeNumber, endNodeNumber):
-            super().__init__(startNodeNumber, endNodeNumber)
+class Dijkstra_2(Algorithm):
+    def __init__(self, graph, startNodeNumber, endNodeNumber):
+            super().__init__(graph,startNodeNumber, endNodeNumber)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
     def getNodeCost(self, node):
@@ -10,7 +10,7 @@ class Dijkstra(Algorithm):
         #Also, we want the cost to be different depending on the parent ;)
         random.seed(node.number)
         costToExplore = random.random() * 5
-        print("cost:", node.number, costToExplore)
+        #print("cost:", node.number, costToExplore)
         #Backtrack to the source to see the current
         #We are going to add the cost to traverse from the parent
         #In case we have some cheaper path through a different node
@@ -22,7 +22,7 @@ class Dijkstra(Algorithm):
         # parentNodeCost = random.random() * 3
         # costToExplore += parentNodeCost
         #return 1
-        return 1
+        return costToExplore
 
     def run(self):
         self.resetGraph()
@@ -51,7 +51,7 @@ class Dijkstra(Algorithm):
             neighbors = self.graph.getNodeNeighbors(currentNode.number)
             currentNode.neighbors = neighbors
             totalPath.append(currentNode.number)
-            print("Visiting: " + str(currentNode.number))
+            #print("Visiting: " + str(currentNode.number))
             self.visited.append(currentNode.number)
             for n in neighbors:
                 #if we haven't visited it or the cost to it has changed
@@ -59,20 +59,19 @@ class Dijkstra(Algorithm):
                     continue
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
                 costToExplore = self.getNodeCost(currentNeighborNode)
-                if(currentNeighborNode == currentNode.parent):
-                    continue
                 #If one of the neighbors is the node we are looking for
                 if n == self.endNodeNumber:
                     #print("Found node!")
                     self.foundGoal = True
+                #If the new found cost is lower, we should revisit it
                 if (costToExplore < currentNeighborNode.costToExplore):
                     currentNeighborNode.costToExplore = costToExplore
                     currentNeighborNode.parent = currentNode
-                    print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
+                    #print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
                     self.unVisited.append(currentNeighborNode)
             #sort the list
             self.unVisited.sort(key=lambda x: x.costToExplore)
-            [print(i.number, i.costToExplore) for i in self.unVisited]
+            #[print(i.number, i.costToExplore) for i in self.unVisited]
 
 
         #If we have found the node

@@ -8,15 +8,16 @@ A Height (assuming we have a grid)
 """
 
 class Node():
-    def __init__(self, width = None, height = None, number = None):
+    def __init__(self, row = None, column = None, number = None):
         self.isGoal = False
-        if(width is not None and height is not None):
-            self.width = width
-            self.height = height
+        if(column is not None and row is not None):
+            self.row = row
+            self.column = column
         if(number is not None):
             self.number = number
         self.parent = None
         self.neighbors = [None]*4
+        self.costToExplore = 32768
     def getNeighbors(self):
         return self.neighbors
     def getParents(self):
