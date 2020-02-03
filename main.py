@@ -37,8 +37,8 @@ def select(row, column):
      print(row, column)
 
 
-startNode = 6
-endNode = 40
+startNode = 0
+endNode = 35
 g = Graph(nodesTall=10, nodesWide=10)
 startIndexes = g.getNodeIndexes(startNode)
 endIndexes = g.getNodeIndexes(endNode)
@@ -47,10 +47,11 @@ updateStart(startIndexes[0],startIndexes[1])
 updateEnd(endIndexes[0], endIndexes[1])
 
 #dfs = DFS(g,startNode, endNode, window = win)
-bfs = BFS(g,startNode, endNode, window = win)
-#dijkstra = Dijkstra_2(g, startNode, endNode, window = win)
+#bfs = BFS(g,startNode, endNode, window = win)
+dijkstra = Dijkstra_2(g, startNode, endNode, window = win)
 #Algorithms = [bfs, dfs, dijkstra]
-bfs.run()
+#bfs.run()
+dijkstra.run()
 win.mainloop()
 #for a in Algorithms:
 #     a.run()

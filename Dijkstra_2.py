@@ -1,27 +1,35 @@
 from Algorithm import *
 import random
+import time
+import sys
 class Dijkstra_2(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber):
-            super().__init__(graph,startNodeNumber, endNodeNumber)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, window):
+            super().__init__(graph,startNodeNumber, endNodeNumber, window)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
-    def getNodeCost(self, node):
+
+    #TODO: Only change cost if its MAX
+    def getEdgeCost(self, parentNode, neighborNode):
         #Arbitrarty heuristic so that cost to get to node is not uniform
         #Also, we want the cost to be different depending on the parent ;)
-        random.seed(node.number)
-        costToExplore = random.random() * 5
+        seed = parentNode.number*neighborNode.number
+        random.seed(seed)
+        costToExplore = random.random() * 6 #10
         #print("cost:", node.number, costToExplore)
         #Backtrack to the source to see the current
         #We are going to add the cost to traverse from the parent
         #In case we have some cheaper path through a different node
-        while(node.parent != None):
-            parentNodeCost = node.parent.costToExplore
+        nodeCopy = parentNode
+        while(nodeCopy.parent != None):
+            parentNodeCost = nodeCopy.parent.costToExplore
             costToExplore += parentNodeCost
-            node = node.parent
+            #print("Node:", nodeCopy.number, "Cost:", costToExplore)
+            nodeCopy = nodeCopy.parent
         # random.seed(node.parent.number)
         # parentNodeCost = random.random() * 3
         # costToExplore += parentNodeCost
         #return 1
+        #print("Total Cost to go to:", node.number, "is:", costToExplore)
         return costToExplore
 
     def run(self):
@@ -46,32 +54,54 @@ class Dijkstra_2(Algorithm):
         currentNode.costToExplore = 0
         # We mark the first node as unvisited
         self.unVisited.append(currentNode)
+        #While we haven't found the goal and the length of the unvisited array > 0
         while(self.foundGoal != True and len(self.unVisited) != 0):
+            #Let's explore the least expensive node
             currentNode = self.unVisited.pop(0)
+            #find the nodes neighbors
             neighbors = self.graph.getNodeNeighbors(currentNode.number)
+            #set the neighbors as the current node's neighbors
             currentNode.neighbors = neighbors
+            #This is for plotting: get the row and column of the node
+            (row, col) = self.graph.getNodeIndexes(currentNode.number)
+            if (currentNode.number != self.startNodeNumber):
+                time.sleep(.05)
+                self.updatePlot(row, col, "pink")
+            #To the total path, add this node
             totalPath.append(currentNode.number)
-            #print("Visiting: " + str(currentNode.number))
-            self.visited.append(currentNode.number)
+            #Ok, we are visiting this node
+            print("Visiting: " + str(currentNode.number))
+            #self.visited.append(currentNode.number)
+            #For each of the neighbors
             for n in neighbors:
-                #if we haven't visited it or the cost to it has changed
+                #We are going to find the edge to each one of the neighbors, and add it
+                #to our priority queue (nodes we haven't visited)
+                #If we have visited it before
                 if(n in self.unVisited):
-                    continue
+                    #only continue if the its parent is different than our current node
+                    currentNeighborNode = self.graph.makeNodeFromNumber(n)
+                    if(currentNeighborNode.parent == currentNode):
+                        continue
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                costToExplore = self.getNodeCost(currentNeighborNode)
+                #Find the edge cost to this node (Change this function to include both nodes, current and neighbor)
+                costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
+                # If the new found cost is lower, we should replace it in the queue
+                if(costToExplore < currentNeighborNode.costToExplore):
+                    if(currentNeighborNode.costToExplore < sys.maxsize):
+                        print("FOUND AN ACTUAL IMPROVEMENT")
+                    currentNeighborNode.costToExplore = costToExplore
+                    #set the new parent of the node
+                    currentNeighborNode.parent = currentNode
+                    print("Adding to unvisited: " + str(currentNeighborNode.number) + ", Parent is: " + str(currentNode.number), "Cost: ", costToExplore)
+                    self.unVisited.append(currentNeighborNode)
                 #If one of the neighbors is the node we are looking for
                 if n == self.endNodeNumber:
                     #print("Found node!")
                     self.foundGoal = True
-                #If the new found cost is lower, we should revisit it
-                if (costToExplore < currentNeighborNode.costToExplore):
-                    currentNeighborNode.costToExplore = costToExplore
-                    currentNeighborNode.parent = currentNode
-                    #print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
-                    self.unVisited.append(currentNeighborNode)
+            self.visited.append(currentNode.number)
             #sort the list
             self.unVisited.sort(key=lambda x: x.costToExplore)
-            #[print(i.number, i.costToExplore) for i in self.unVisited]
+            [print(i.number, i.costToExplore) for i in self.unVisited]
 
 
         #If we have found the node
@@ -94,6 +124,10 @@ class Dijkstra_2(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
+            for node in finalPath[1:-1]:
+                (row, col) = self.graph.getNodeIndexes(node)
+                time.sleep(.05)
+                self.updatePlot(row, col, "blue")
             print("Final path from start to end as found by Dijkstra's:" , finalPath)
 
         else:

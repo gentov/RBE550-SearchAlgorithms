@@ -6,7 +6,7 @@ Parents
 A Width (Assuming we have a grid)
 A Height (assuming we have a grid)
 """
-
+import sys
 class Node():
     def __init__(self, row = None, column = None, number = None):
         self.isGoal = False
@@ -17,7 +17,7 @@ class Node():
             self.number = number
         self.parent = None
         self.neighbors = [None]*4
-        self.costToExplore = 32768
+        self.costToExplore = sys.maxsize
     def getNeighbors(self):
         return self.neighbors
     def getParents(self):
