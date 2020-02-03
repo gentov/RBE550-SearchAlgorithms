@@ -3,7 +3,7 @@ import random
 import time
 import sys
 class Dijkstra_2(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, window):
+    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None):
             super().__init__(graph,startNodeNumber, endNodeNumber, window)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
@@ -63,9 +63,10 @@ class Dijkstra_2(Algorithm):
             currentNode.neighbors = neighbors
             #This is for plotting: get the row and column of the node
             (row, col) = self.graph.getNodeIndexes(currentNode.number)
-            if (currentNode.number != self.startNodeNumber):
-                time.sleep(.05)
-                self.updatePlot(row, col, "pink")
+            if (self.win is not None):
+                if (currentNode.number != self.startNodeNumber):
+                    time.sleep(.05)
+                    self.updatePlot(row, col, "pink")
             #To the total path, add this node
             totalPath.append(currentNode.number)
             #Ok, we are visiting this node
@@ -100,7 +101,7 @@ class Dijkstra_2(Algorithm):
             self.visited.append(currentNode.number)
             #sort the list
             self.unVisited.sort(key=lambda x: x.costToExplore)
-            [print(i.number, i.costToExplore) for i in self.unVisited]
+            #[print(i.number, i.costToExplore) for i in self.unVisited]
 
 
         #If we have found the node
@@ -123,10 +124,11 @@ class Dijkstra_2(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
-            for node in finalPath[1:-1]:
-                (row, col) = self.graph.getNodeIndexes(node)
-                time.sleep(.05)
-                self.updatePlot(row, col, "blue")
+            if (self.win is not None):
+                for node in finalPath[1:-1]:
+                    (row, col) = self.graph.getNodeIndexes(node)
+                    time.sleep(.05)
+                    self.updatePlot(row, col, "blue")
             print("Final path from start to end as found by Dijkstra's:" , finalPath)
 
         else:

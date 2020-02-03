@@ -1,7 +1,7 @@
 from Algorithm import *
 import time
 class BFS(Algorithm):
-    def __init__(self,graph, startNodeNumber, endNodeNumber, window):
+    def __init__(self,graph, startNodeNumber, endNodeNumber, window = None):
             super().__init__(graph,startNodeNumber, endNodeNumber, window)
     def run(self):
         self.foundGoal = False
@@ -15,33 +15,34 @@ class BFS(Algorithm):
         """
         print("Start: ", self.startNodeNumber, "End: ", self.endNodeNumber)
         initialNode = self.startNodeNumber
-        #We mark the first node as unvisited
-        self.unVisited.append(initialNode)
         #we have our current node object
         currentNode = self.graph.makeNodeFromNumber(initialNode)
+        # We mark the first node as unvisited
+        self.unVisited.append(currentNode)
         while(self.foundGoal != True and len(self.unVisited) != 0):
-            currentNodeNumber = self.unVisited.pop(0)
-            (row,col) = self.graph.getNodeIndexes(currentNodeNumber)
-            if(currentNodeNumber != self.startNodeNumber):
-                time.sleep(.05)
-                self.updatePlot(row, col, "pink")
-            currentNode = self.graph.makeNodeFromNumber(currentNodeNumber)
-            neighbors = self.graph.getNodeNeighbors(currentNodeNumber)
+            currentNode = self.unVisited.pop(0)
+            (row,col) = self.graph.getNodeIndexes(currentNode.number)
+            if(self.win is not None):
+                if(currentNode.number != self.startNodeNumber):
+                    time.sleep(.05)
+                    self.updatePlot(row, col, "pink")
+            #currentNode = self.graph.makeNodeFromNumber(currentNode.number)
+            neighbors = self.graph.getNodeNeighbors(currentNode.number)
             currentNode.neighbors = neighbors
             totalPath.append(currentNode.number)
-            #print("Visiting: " + str(currentNode.number))
-            self.visited.append(currentNode.number)
+            print("Visiting: " + str(currentNode.number))
+            self.visited.append(currentNode)
             for n in neighbors:
-                if(n in self.visited or n in self.unVisited):
-                    continue
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
+                if(currentNeighborNode in self.visited or currentNeighborNode in self.unVisited):
+                    continue
                 currentNeighborNode.parent = currentNode
-                #print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
+                print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
                 #If one of the neighbors is the node we are looking for
-                if n == self.endNodeNumber:
+                if currentNeighborNode.number == self.endNodeNumber:
                     #print("Found node!")
                     self.foundGoal = True
-                self.unVisited.append(n)
+                self.unVisited.append(currentNeighborNode)
 
         #If we have found the node
         if(self.foundGoal):
@@ -66,10 +67,11 @@ class BFS(Algorithm):
             print("Final path from start to end as found by BFS:" , finalPath)
             del self.visited[:]
             del self.unVisited [:]
-            for node in finalPath[1:-1]:
-                (row, col) = self.graph.getNodeIndexes(node)
-                time.sleep(.05)
-                self.updatePlot(row, col, "blue")
+            if(self.win is not None):
+                for node in finalPath[1:-1]:
+                    (row, col) = self.graph.getNodeIndexes(node)
+                    time.sleep(.05)
+                    self.updatePlot(row, col, "blue")
 
 
 

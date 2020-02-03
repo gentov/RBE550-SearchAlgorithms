@@ -18,6 +18,8 @@ class Algorithm():
         self.graph = graph
         if(window is not None):
             self.win = window
+        else:
+            self.win = None
 
     def updatePlot(self, row, col,color):
         node = Button(self.win, height=3, width=6, bg=color, state="disabled")
