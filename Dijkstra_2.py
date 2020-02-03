@@ -8,7 +8,6 @@ class Dijkstra_2(Algorithm):
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
-    #TODO: Only change cost if its MAX
     def getEdgeCost(self, parentNode, neighborNode):
         #Arbitrarty heuristic so that cost to get to node is not uniform
         #Also, we want the cost to be different depending on the parent ;)
