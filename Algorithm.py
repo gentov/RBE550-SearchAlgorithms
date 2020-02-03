@@ -19,8 +19,8 @@ class Algorithm():
         if(window is not None):
             self.win = window
 
-    def updatePlot(self, row, col, color):
-        node = Button(self.win, height=3, width=6, command=lambda row=row, column=col: self.updatePlot(row, column), bg=color)
+    def updatePlot(self, row, col,color):
+        node = Button(self.win, height=3, width=6, bg=color, state="disabled")
         node.grid(row=row, column=col)
         self.win.update()
 
