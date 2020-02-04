@@ -26,6 +26,7 @@ class GUI():
 
 
     def makeGrid(self,nodesTall = 10, nodesWide = 10):
+       self.g = Graph(nodesTall=10, nodesWide=10)
        for i in range(nodesTall):
            for j in range(nodesWide):
                node = Button(self.win, height=3, width=6, command=lambda row=i, column=j: self.select(row, column), bg = "white")

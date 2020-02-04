@@ -101,7 +101,7 @@ class Dijkstra_2(Algorithm):
             self.visited.append(currentNode.number)
             #sort the list
             self.unVisited.sort(key=lambda x: x.costToExplore)
-            #[print(i.number, i.costToExplore) for i in self.unVisited]
+            [print(i.number, i.costToExplore) for i in self.unVisited]
 
 
         #If we have found the node
