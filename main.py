@@ -1,3 +1,9 @@
+#TODO:
+# 1) Obstacle avoid,
+# 2) Make sure you have placed a start and end when hit run,
+# 3) if start is (0,0), and place end, start disappears
+# 4) Check if for text GUI valid nodes are chosen
+
 from Graph import *
 from BFS import *
 from DFS import *
@@ -22,25 +28,44 @@ class GUI():
         self.selectingEnd = False
         self.selectingObs = False
         self.deletingObs = False
+        self.nodes = {}
         self.makeGrid(self.g.nodesTall, self.g.nodesWide)
 
 
     def makeGrid(self,nodesTall = 10, nodesWide = 10):
-       self.g = Graph(nodesTall=10, nodesWide=10)
-       for i in range(nodesTall):
-           for j in range(nodesWide):
-               node = Button(self.win, height=3, width=6, command=lambda row=i, column=j: self.select(row, column), bg = "white")
-               node.grid(row = i, column = j)
+        self.g = Graph(nodesTall=10, nodesWide=10)
+        self.startNode = 0
+        self.endNode = 0
+        for i in range(nodesTall):
+            for j in range(nodesWide):
+                number = self.g.getNodeNumber(i, j)
+                self.nodes[number] = Button(self.win, height=3, width=6, command=lambda row=i, column=j: self.select(row, column), bg = "white")
+                self.nodes[number].grid(row = i, column = j)
 
     def select(self,row, column):
         if(self.selectingStart):
+            #Erasing old start node, by grabbing the coordinates of the start and setting that button to white
+            startNodeCoord = self.g.getNodeIndexes(self.startNode)
+            node = Button(self.win, height=3, width=6, command=lambda row=startNodeCoord[0],
+                        column=startNodeCoord[1]: self.select(row, column),
+                        bg="white")
+            node.grid(row=startNodeCoord[0], column=startNodeCoord[1])
+            #now place the new start where the user placed it and make it red
             node = Button(self.win, height=3, width=6, command=lambda row=row, column=column: self.select(row, column), bg="red",
                           state="disabled")
             node.grid(row=row, column=column)
             self.win.update()
             self.startNode = self.g.getNodeNumber(row,column)
             self.updateSelectStart()
+
         elif(self.selectingEnd):
+            # Erasing old end node, by grabbing the coordinates of the start and setting that button to white
+            endNodeCoord = self.g.getNodeIndexes(self.endNode)
+            node = Button(self.win, height=3, width=6, command=lambda row=endNodeCoord[0],
+                                                column=endNodeCoord[1]: self.select(row, column),
+                                                bg="white")
+            node.grid(row=endNodeCoord[0], column=endNodeCoord[1])
+            # now place the new end where the user placed it and make it green
             node = Button(self.win, height=3, width=6, command=lambda row=row, column=column: self.select(row, column), bg="green",
                           state="disabled")
             node.grid(row=row, column=column)
@@ -95,29 +120,30 @@ class GUI():
         runAlgorithm.grid(row=11, column=4, columnspan=2)
         self.win.update()
 
-#Ask the user if they want a gui, if they do
-wantGui = input("Do you want to use the GUI? (y/n)")
-if wantGui == "y" or wantGui ==  "Y" or wantGui ==  "yes" or wantGui == "Yes" or wantGui == "YES":
-    gui = GUI()
-    gui.homeScreen()
-    gui.win.mainloop()
-#otherwise:
-else:
-    #TODO: Check if valid nodes
-    startNode = input("What is your start node? (0 to 99)")
-    startNode = int(startNode)
-    endNode = input("What is your end node? (0 to 99)")
-    endNode = int(endNode)
-    alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
-    g = Graph(nodesTall=10, nodesWide=10)
-    while(alg not in ["1", "2", "3"]):
+if __name__ == '__main__':
+    #Ask the user if they want a gui, if they do
+    wantGui = input("Do you want to use the GUI? (y/n)")
+    if wantGui == "y" or wantGui ==  "Y" or wantGui ==  "yes" or wantGui == "Yes" or wantGui == "YES":
+        gui = GUI()
+        gui.homeScreen()
+        gui.win.mainloop()
+    #otherwise:
+    else:
+        #TODO: Check if valid nodes
+        startNode = input("What is your start node? (0 to 99)")
+        startNode = int(startNode)
+        endNode = input("What is your end node? (0 to 99)")
+        endNode = int(endNode)
         alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
-    if alg == "1":
-        bfs = BFS(g, startNode, endNode)
-        bfs.run()
-    elif alg == "2":
-        dfs = DFS(g, startNode, endNode)
-        dfs.run()
-    elif alg == "3":
-        dijkstra = Dijkstra_2(g, startNode, endNode)
-        dijkstra.run()
+        g = Graph(nodesTall=10, nodesWide=10)
+        while(alg not in ["1", "2", "3"]):
+            alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
+        if alg == "1":
+            bfs = BFS(g, startNode, endNode)
+            bfs.run()
+        elif alg == "2":
+            dfs = DFS(g, startNode, endNode)
+            dfs.run()
+        elif alg == "3":
+            dijkstra = Dijkstra_2(g, startNode, endNode)
+            dijkstra.run()
