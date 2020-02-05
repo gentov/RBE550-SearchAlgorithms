@@ -2,8 +2,8 @@
 from Algorithm import *
 import time
 class DFS(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None):
-            super().__init__(graph, startNodeNumber, endNodeNumber, window)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None, blocked = None):
+            super().__init__(graph, startNodeNumber, endNodeNumber, window, blocked)
     def run(self):
         #NOTE: THE UNVISITED ARRAY WILL HOLD THE NEXT TO VIEW
         self.foundGoal = False
@@ -52,6 +52,8 @@ class DFS(Algorithm):
             # if(self.endNodeNumber in neighbors):
             #     self.foundGoal = True
             for i in range(len(neighbors)):
+                if (neighbors[i] in self.blocked):
+                    continue
                 if(self.graph.makeNodeFromNumber(neighbors[i]) not in self.visited):
                     currentNeighborNode = self.graph.makeNodeFromNumber(neighbors[i])
                     currentNeighborNode.parent = currentNode

@@ -1,8 +1,8 @@
 from Algorithm import *
 import time
 class BFS(Algorithm):
-    def __init__(self,graph, startNodeNumber, endNodeNumber, window = None):
-            super().__init__(graph,startNodeNumber, endNodeNumber, window)
+    def __init__(self,graph, startNodeNumber, endNodeNumber, window = None, blocked = None):
+            super().__init__(graph,startNodeNumber, endNodeNumber, window, blocked)
     def run(self):
         self.foundGoal = False
         totalPath = []
@@ -34,7 +34,8 @@ class BFS(Algorithm):
             self.visited.append(currentNode)
             for n in neighbors:
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                if(currentNeighborNode in self.visited or currentNeighborNode in self.unVisited):
+                if(currentNeighborNode in self.visited or currentNeighborNode in self.unVisited or
+                        currentNeighborNode.number in self.blocked):
                     continue
                 currentNeighborNode.parent = currentNode
                 print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))

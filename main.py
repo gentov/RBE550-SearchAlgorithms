@@ -1,8 +1,12 @@
-#TODO:
-# 1) Obstacle avoid,
+#TODO by 2/20:
+# 1) Obstacle avoid --> Works, but I don't love it.
 # 2) Make sure you have placed a start and end when hit run,
 # 3) if start is (0,0), and place end, start disappears
 # 4) Check if for text GUI valid nodes are chosen
+# 5) Pad it so that the grid isn't just in the top left corner
+# 6) Make map larger or smaller (put each button in a frame of a certain size and fill to frame)
+# 7) Turtle
+# 8) Implement the other algorithms
 
 from Graph import *
 from BFS import *
@@ -21,6 +25,7 @@ class GUI():
 
         self.startNode = 0
         self.endNode = 0
+        self.blocked = []
         self.g = Graph(nodesTall=10, nodesWide=10)
         # self.startIndexes = g.getNodeIndexes(startNode)
         # self.endIndexes = g.getNodeIndexes(endNode)
@@ -33,49 +38,39 @@ class GUI():
 
 
     def makeGrid(self,nodesTall = 10, nodesWide = 10):
-        self.g = Graph(nodesTall=10, nodesWide=10)
+        self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = 0
         self.endNode = 0
+        self.blocked = []
         for i in range(nodesTall):
             for j in range(nodesWide):
                 number = self.g.getNodeNumber(i, j)
-                self.nodes[number] = Button(self.win, height=3, width=6, command=lambda row=i, column=j: self.select(row, column), bg = "white")
+                self.nodes[number] = Button(self.win, height=3, width=6, command=lambda number = number: self.select(number), bg = "white")
                 self.nodes[number].grid(row = i, column = j)
 
-    def select(self,row, column):
+    def select(self, number):
         if(self.selectingStart):
-            #Erasing old start node, by grabbing the coordinates of the start and setting that button to white
-            startNodeCoord = self.g.getNodeIndexes(self.startNode)
-            node = Button(self.win, height=3, width=6, command=lambda row=startNodeCoord[0],
-                        column=startNodeCoord[1]: self.select(row, column),
-                        bg="white")
-            node.grid(row=startNodeCoord[0], column=startNodeCoord[1])
+            #Erasing old start node, by grabbing the old start and setting that button to white
+            oldNode = self.nodes[self.startNode].configure(bg="white")
             #now place the new start where the user placed it and make it red
-            node = Button(self.win, height=3, width=6, command=lambda row=row, column=column: self.select(row, column), bg="red",
-                          state="disabled")
-            node.grid(row=row, column=column)
+            newnode = self.nodes[number].configure(bg="red")
             self.win.update()
-            self.startNode = self.g.getNodeNumber(row,column)
+            self.startNode = number #self.g.getNodeNumber(row,column)
             self.updateSelectStart()
 
         elif(self.selectingEnd):
-            # Erasing old end node, by grabbing the coordinates of the start and setting that button to white
-            endNodeCoord = self.g.getNodeIndexes(self.endNode)
-            node = Button(self.win, height=3, width=6, command=lambda row=endNodeCoord[0],
-                                                column=endNodeCoord[1]: self.select(row, column),
-                                                bg="white")
-            node.grid(row=endNodeCoord[0], column=endNodeCoord[1])
-            # now place the new end where the user placed it and make it green
-            node = Button(self.win, height=3, width=6, command=lambda row=row, column=column: self.select(row, column), bg="green",
-                          state="disabled")
-            node.grid(row=row, column=column)
+            # Erasing old end node, by grabbing the old end and setting that button to white
+            oldNode = self.nodes[self.endNode].configure(bg="white")
+            # now place the new start where the user placed it and make it red
+            newNode = self.nodes[number].configure(bg="green")
             self.win.update()
-            self.endNode = self.g.getNodeNumber(row, column)
+            self.endNode = number
             self.updateSelectEnd()
         else:
-            node = Button(self.win, height=3, width=6, command=lambda row=row, column=column: self.select(row, column), bg = "black")
-            node.grid(row=row, column=column)
-            print(row, column)
+            # Placing an obstable
+            obstable = self.nodes[number].configure(bg="black")
+            self.win.update()
+            self.blocked.append(number)
 
     def updateSelectStart(self):
         if self.selectingStart == False:
@@ -91,13 +86,13 @@ class GUI():
 
     def runSearchAlgorithm(self, alg):
         if alg.get() == "DFS":
-            dfs = DFS(self.g,self.startNode, self.endNode, window = self.win)
+            dfs = DFS(self.g,self.startNode, self.endNode, window = self.win, blocked = self.blocked)
             dfs.run()
         elif alg.get() == "BFS":
-            bfs = BFS(self.g,self.startNode, self.endNode, window = self.win)
+            bfs = BFS(self.g,self.startNode, self.endNode, window = self.win, blocked = self.blocked)
             bfs.run()
         else:
-            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, window = self.win)
+            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, window = self.win,blocked = self.blocked)
             dijkstra.run()
 
     def homeScreen(self):

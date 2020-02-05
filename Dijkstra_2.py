@@ -3,8 +3,8 @@ import random
 import time
 import sys
 class Dijkstra_2(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None):
-            super().__init__(graph,startNodeNumber, endNodeNumber, window)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None, blocked = None):
+            super().__init__(graph,startNodeNumber, endNodeNumber, window, blocked)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
@@ -82,6 +82,9 @@ class Dijkstra_2(Algorithm):
                     currentNeighborNode = self.graph.makeNodeFromNumber(n)
                     if(currentNeighborNode.parent == currentNode):
                         continue
+                if(n in self.blocked):
+                    continue
+
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
                 #Find the edge cost to this node (Change this function to include both nodes, current and neighbor)
                 costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
