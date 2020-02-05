@@ -2,8 +2,8 @@
 from Algorithm import *
 import time
 class DFS(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None, blocked = None):
-            super().__init__(graph, startNodeNumber, endNodeNumber, window, blocked)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, GUI = None, blocked = None):
+            super().__init__(graph, startNodeNumber, endNodeNumber, GUI, blocked)
     def run(self):
         #NOTE: THE UNVISITED ARRAY WILL HOLD THE NEXT TO VIEW
         self.foundGoal = False
@@ -31,9 +31,9 @@ class DFS(Algorithm):
             # currentNodeNumber = stack.pop(0)
             currentNode = self.unVisited.pop(0)
             (row, col) = self.graph.getNodeIndexes(currentNode.number)
-            if (self.win is not None):
+            if (self.GUI is not None):
                 if (currentNode.number != self.startNodeNumber):
-                    self.updatePlot(row, col, "pink")
+                    self.updatePlot(currentNode.number, "pink")
             print("Visiting: ", currentNode.number)
             currentNode = self.graph.makeNodeFromNumber(currentNode.number)
             neighbors = self.graph.getNodeNeighbors(currentNode.number)
@@ -93,11 +93,10 @@ class DFS(Algorithm):
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
             print("Final path from start to end as found by DFS" , finalPath)
-            if (self.win is not None):
+            if (self.GUI is not None):
                 for node in finalPath[1:-1]:
-                    (row, col) = self.graph.getNodeIndexes(node)
                     time.sleep(.05)
-                    self.updatePlot(row, col, "blue")
+                    self.updatePlot(node, "blue")
 
         else:
             print(totalPath)

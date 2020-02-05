@@ -1,8 +1,8 @@
 from Algorithm import *
 import time
 class BFS(Algorithm):
-    def __init__(self,graph, startNodeNumber, endNodeNumber, window = None, blocked = None):
-            super().__init__(graph,startNodeNumber, endNodeNumber, window, blocked)
+    def __init__(self,graph, startNodeNumber, endNodeNumber, GUI = None, blocked = None):
+            super().__init__(graph,startNodeNumber, endNodeNumber, GUI, blocked)
     def run(self):
         self.foundGoal = False
         totalPath = []
@@ -22,10 +22,10 @@ class BFS(Algorithm):
         while(self.foundGoal != True and len(self.unVisited) != 0):
             currentNode = self.unVisited.pop(0)
             (row,col) = self.graph.getNodeIndexes(currentNode.number)
-            if(self.win is not None):
+            if(self.GUI is not None):
                 if(currentNode.number != self.startNodeNumber):
                     time.sleep(.05)
-                    self.updatePlot(row, col, "pink")
+                    self.updatePlot(currentNode.number, "pink")
             #currentNode = self.graph.makeNodeFromNumber(currentNode.number)
             neighbors = self.graph.getNodeNeighbors(currentNode.number)
             currentNode.neighbors = neighbors
@@ -68,11 +68,10 @@ class BFS(Algorithm):
             print("Final path from start to end as found by BFS:" , finalPath)
             del self.visited[:]
             del self.unVisited [:]
-            if(self.win is not None):
+            if (self.GUI is not None):
                 for node in finalPath[1:-1]:
-                    (row, col) = self.graph.getNodeIndexes(node)
                     time.sleep(.05)
-                    self.updatePlot(row, col, "blue")
+                    self.updatePlot(node, "blue")
 
 
 

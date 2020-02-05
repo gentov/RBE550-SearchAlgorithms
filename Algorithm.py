@@ -8,7 +8,7 @@ from Graph import *
 from tkinter import *
 
 class Algorithm():
-    def __init__(self,graph,startNodeNumber, endNodeNumber, window = None, blocked = None):
+    def __init__(self,graph,startNodeNumber, endNodeNumber, GUI = None, blocked = None):
         self.visited = []
         self.unVisited = []
         self.finalPath = []
@@ -18,15 +18,14 @@ class Algorithm():
         self.endNodeNumber = endNodeNumber
         self.foundGoal = False
         self.graph = graph
-        if(window is not None):
-            self.win = window
+        if(GUI is not None):
+            self.GUI = GUI
         else:
-            self.win = None
+            self.GUI = None
 
-    def updatePlot(self, row, col,color):
-        node = Button(self.win, height=3, width=6, bg=color, state="disabled")
-        node.grid(row=row, column=col)
-        self.win.update()
+    def updatePlot(self, number, color):
+        self.GUI.nodes[number].configure(bg=color)
+        self.GUI.win.update()
 
     def run(self):
         pass

@@ -3,8 +3,8 @@ import random
 import time
 import sys
 class Dijkstra_2(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, window = None, blocked = None):
-            super().__init__(graph,startNodeNumber, endNodeNumber, window, blocked)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, GUI = None, blocked = None):
+            super().__init__(graph,startNodeNumber, endNodeNumber, GUI, blocked)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
@@ -63,10 +63,10 @@ class Dijkstra_2(Algorithm):
             currentNode.neighbors = neighbors
             #This is for plotting: get the row and column of the node
             (row, col) = self.graph.getNodeIndexes(currentNode.number)
-            if (self.win is not None):
+            if (self.GUI is not None):
                 if (currentNode.number != self.startNodeNumber):
                     time.sleep(.05)
-                    self.updatePlot(row, col, "pink")
+                    self.updatePlot(currentNode.number, "pink")
             #To the total path, add this node
             totalPath.append(currentNode.number)
             #Ok, we are visiting this node
@@ -82,9 +82,8 @@ class Dijkstra_2(Algorithm):
                     currentNeighborNode = self.graph.makeNodeFromNumber(n)
                     if(currentNeighborNode.parent == currentNode):
                         continue
-                if(n in self.blocked):
+                if n in self.blocked:
                     continue
-
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
                 #Find the edge cost to this node (Change this function to include both nodes, current and neighbor)
                 costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
@@ -127,11 +126,10 @@ class Dijkstra_2(Algorithm):
             # Reverse the list so that we look at children instead of parents
             finalPath.reverse()
             finalPath.append(self.endNodeNumber)
-            if (self.win is not None):
+            if (self.GUI is not None):
                 for node in finalPath[1:-1]:
-                    (row, col) = self.graph.getNodeIndexes(node)
                     time.sleep(.05)
-                    self.updatePlot(row, col, "blue")
+                    self.updatePlot(node, "blue")
             print("Final path from start to end as found by Dijkstra's:" , finalPath)
 
         else:
