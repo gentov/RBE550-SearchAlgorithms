@@ -1,12 +1,13 @@
 #TODO by 2/20:
-# 1) Obstacle avoid --> Works, but I don't love it.
-# 2) Make sure you have placed a start and end when hit run,
-# 3) if start is (0,0), and place end, start disappears --> I think done
-# 4) Check if for text GUI valid nodes are chosen
-# 5) Pad it so that the grid isn't just in the top left corner --> Done
-# 6) Make map larger or smaller (put each button in a frame of a certain size and fill to frame)
-# 7) Turtle
-# 8) Implement the other algorithms
+# 1) Won't backtrack with obstacles
+# 2) Obstacle avoid --> Works, but I don't love it.
+# 3) Make sure you have placed a start and end when hit run,
+# 4) if start is (0,0), and place end, start disappears --> I think done
+# 5) Check if for text GUI valid nodes are chosen
+# 6) Pad it so that the grid isn't just in the top left corner --> Done
+# 7) Make map larger or smaller (put each button in a frame of a certain size and fill to frame)
+# 8) Turtle
+# 9) Implement the other algorithms
 
 from Graph import *
 from BFS import *

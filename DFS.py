@@ -1,4 +1,3 @@
-#TODO: FIGURE OUT WHY IT WASN'T WORKING BEFORE
 from Algorithm import *
 import time
 class DFS(Algorithm):
@@ -30,12 +29,10 @@ class DFS(Algorithm):
             #pop the unvisited node off the top
             # currentNodeNumber = stack.pop(0)
             currentNode = self.unVisited.pop(0)
-            (row, col) = self.graph.getNodeIndexes(currentNode.number)
             if (self.GUI is not None):
                 if (currentNode.number != self.startNodeNumber):
                     self.updatePlot(currentNode.number, "pink")
             print("Visiting: ", currentNode.number)
-            currentNode = self.graph.makeNodeFromNumber(currentNode.number)
             neighbors = self.graph.getNodeNeighbors(currentNode.number)
             print("Node Neighbors are: ", neighbors)
             currentNode.neighbors = neighbors
@@ -51,9 +48,13 @@ class DFS(Algorithm):
             #Append to the unvisited array (our stack), the first neighbor we explore, and then break
             # if(self.endNodeNumber in neighbors):
             #     self.foundGoal = True
+            canGoDeeper = False
             for i in range(len(neighbors)):
+                #We only want to check a neighbot if it is not blocked, otherwise, we don't do anything
+                #I can't just do: if in blocked continue, because if the last node is blocked, we won't ever backtrack
                 if (neighbors[i] in self.blocked):
                     continue
+                #if the current neighbor has not been visited
                 if(self.graph.makeNodeFromNumber(neighbors[i]) not in self.visited):
                     currentNeighborNode = self.graph.makeNodeFromNumber(neighbors[i])
                     currentNeighborNode.parent = currentNode
@@ -61,15 +62,19 @@ class DFS(Algorithm):
                     nextNodeToVisit = currentNeighborNode
                     if(nextNodeToVisit.number == self.endNodeNumber):
                         self.foundGoal = True
+                    canGoDeeper = True
                     break
-                #If you have iterated through all the nodes and we have visited them all, backtrack one:
-                if(i == len(neighbors) - 1):
-                    nextNodeToVisit = currentNode.parent
-                    self.unVisited.append(nextNodeToVisit)
-            #check if we have returned to the start OR we have been stuck on the same node
-            if(nextNodeToVisit.number == initialNode): # or nextNodeToVisit == currentNode.number):
-              #  print("Next node to visit is: ", nextNodeToVisit, ". Returned to the start.")
-                break
+            # If you have iterated through all the nodes and we have visited them all, backtrack one:
+            if (not canGoDeeper):
+                nextNodeToVisit = currentNode.parent
+                self.unVisited.append(nextNodeToVisit)
+                print("Backtracking")
+
+
+            # #check if we have returned to the start OR we have been stuck on the same node
+            # if(nextNodeToVisit.number == initialNode): # or nextNodeToVisit == currentNode.number):
+            #   #  print("Next node to visit is: ", nextNodeToVisit, ". Returned to the start.")
+            #     break
             #print("Next node to visit: ", nextNodeToVisit)
 
         #If we have found the node

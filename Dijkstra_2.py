@@ -24,9 +24,6 @@ class Dijkstra_2(Algorithm):
             costToExplore += parentNodeCost
             #print("Node:", nodeCopy.number, "Cost:", costToExplore)
             nodeCopy = nodeCopy.parent
-        # random.seed(node.parent.number)
-        # parentNodeCost = random.random() * 3
-        # costToExplore += parentNodeCost
         #return 1
         #print("Total Cost to go to:", node.number, "is:", costToExplore)
         return costToExplore
@@ -78,7 +75,7 @@ class Dijkstra_2(Algorithm):
                 #to our priority queue (nodes we haven't visited)
                 #If we have visited it before
                 if(n in self.unVisited):
-                    #only continue if the its parent is different than our current node
+                    #only move on if the its parent is different than our current node
                     currentNeighborNode = self.graph.makeNodeFromNumber(n)
                     if(currentNeighborNode.parent == currentNode):
                         continue
