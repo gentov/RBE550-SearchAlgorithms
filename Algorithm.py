@@ -8,12 +8,10 @@ from Graph import *
 from tkinter import *
 
 class Algorithm():
-    def __init__(self,graph,startNodeNumber, endNodeNumber, GUI = None, blocked = None):
+    def __init__(self,graph,startNodeNumber, endNodeNumber, GUI = None):
         self.visited = []
         self.unVisited = []
         self.finalPath = []
-        if blocked is not None:
-            self.blocked = blocked
         self.startNodeNumber = startNodeNumber
         self.endNodeNumber = endNodeNumber
         self.foundGoal = False

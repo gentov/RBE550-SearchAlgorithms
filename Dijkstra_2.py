@@ -3,8 +3,8 @@ import random
 import time
 import sys
 class Dijkstra_2(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, GUI = None, blocked = None):
-            super().__init__(graph,startNodeNumber, endNodeNumber, GUI, blocked)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, GUI = None):
+            super().__init__(graph,startNodeNumber, endNodeNumber, GUI)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
@@ -79,7 +79,7 @@ class Dijkstra_2(Algorithm):
                     currentNeighborNode = self.graph.makeNodeFromNumber(n)
                     if(currentNeighborNode.parent == currentNode):
                         continue
-                if n in self.blocked:
+                if n in self.GUI.blocked:
                     continue
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
                 #Find the edge cost to this node (Change this function to include both nodes, current and neighbor)
@@ -87,6 +87,7 @@ class Dijkstra_2(Algorithm):
                 # If the new found cost is lower, we should replace it in the queue
                 if(costToExplore < currentNeighborNode.costToExplore):
                     if(currentNeighborNode.costToExplore < sys.maxsize):
+                        # print("New Cost:",costToExplore, "Old Cost: ", currentNeighborNode.costToExplore)
                         print("FOUND AN ACTUAL IMPROVEMENT")
                     currentNeighborNode.costToExplore = costToExplore
                     #set the new parent of the node

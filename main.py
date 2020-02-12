@@ -1,13 +1,13 @@
 #TODO by 2/20:
-# 1) Won't backtrack with obstacles
+# 1) Won't backtrack with obstacles --> I think done
 # 2) Obstacle avoid --> Works, but I don't love it.
-# 3) Make sure you have placed a start and end when hit run,
+# 3) Make sure you have placed a start and end when hit run
 # 4) if start is (0,0), and place end, start disappears --> I think done
 # 5) Check if for text GUI valid nodes are chosen
 # 6) Pad it so that the grid isn't just in the top left corner --> Done
 # 7) Make map larger or smaller (put each button in a frame of a certain size and fill to frame)
 # 8) Turtle
-# 9) Implement the other algorithms
+# 9) Implement the other algorithms 
 
 from Graph import *
 from BFS import *
@@ -97,13 +97,13 @@ class GUI():
 
     def runSearchAlgorithm(self, alg):
         if alg.get() == "DFS":
-            dfs = DFS(self.g,self.startNode, self.endNode, GUI = self, blocked = self.blocked)
+            dfs = DFS(self.g,self.startNode, self.endNode, GUI = self)
             dfs.run()
         elif alg.get() == "BFS":
-            bfs = BFS(self.g,self.startNode, self.endNode, GUI = self, blocked = self.blocked)
+            bfs = BFS(self.g,self.startNode, self.endNode, GUI = self)
             bfs.run()
         else:
-            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, GUI = self,blocked = self.blocked)
+            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, GUI = self)
             dijkstra.run()
 
     def homeScreen(self):

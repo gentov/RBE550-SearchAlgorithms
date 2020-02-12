@@ -1,8 +1,8 @@
 from Algorithm import *
 import time
 class DFS(Algorithm):
-    def __init__(self, graph, startNodeNumber, endNodeNumber, GUI = None, blocked = None):
-            super().__init__(graph, startNodeNumber, endNodeNumber, GUI, blocked)
+    def __init__(self, graph, startNodeNumber, endNodeNumber, GUI = None):
+            super().__init__(graph, startNodeNumber, endNodeNumber, GUI)
     def run(self):
         #NOTE: THE UNVISITED ARRAY WILL HOLD THE NEXT TO VIEW
         self.foundGoal = False
@@ -52,7 +52,7 @@ class DFS(Algorithm):
             for i in range(len(neighbors)):
                 #We only want to check a neighbot if it is not blocked, otherwise, we don't do anything
                 #I can't just do: if in blocked continue, because if the last node is blocked, we won't ever backtrack
-                if (neighbors[i] in self.blocked):
+                if (neighbors[i] in self.GUI.blocked):
                     continue
                 #if the current neighbor has not been visited
                 if(self.graph.makeNodeFromNumber(neighbors[i]) not in self.visited):
@@ -64,7 +64,7 @@ class DFS(Algorithm):
                         self.foundGoal = True
                     canGoDeeper = True
                     break
-            # If you have iterated through all the nodes and we have visited them all, backtrack one:
+            # If you have iterated through all the neighbor nodes and we can't go deeper, backtrack one:
             if (not canGoDeeper):
                 nextNodeToVisit = currentNode.parent
                 self.unVisited.append(nextNodeToVisit)
