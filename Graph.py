@@ -47,6 +47,20 @@ class Graph():
         if (column > 0):
             neighbors.append(self.graph[row][column - 1].number)
 
+        #NW, NE, SW, SE
+        # If we have neighbors to the north and west
+        if (row > 0 and column > 0):
+            neighbors.append(self.graph[row - 1][column - 1].number)
+        #north east
+        if (row > 0 and column < self.nodesWide - 1):
+            neighbors.append(self.graph[row - 1][column + 1].number)
+        # If we have neighbors to the south west
+        if (row < self.nodesTall - 1 and column > 0):
+            neighbors.append(self.graph[row + 1][column - 1].number)
+        # south east
+        if (row < self.nodesTall - 1 and column < self.nodesWide - 1):
+            neighbors.append(self.graph[row + 1][column + 1].number)
+
         return neighbors
 
     def makeNodeFromNumber(self, nodeNumber):

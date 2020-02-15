@@ -21,7 +21,6 @@ class BFS(Algorithm):
         self.unVisited.append(currentNode)
         while(self.foundGoal != True and len(self.unVisited) != 0):
             currentNode = self.unVisited.pop(0)
-            (row,col) = self.graph.getNodeIndexes(currentNode.number)
             if(self.GUI is not None):
                 if(currentNode.number != self.startNodeNumber):
                     time.sleep(.05)
@@ -34,16 +33,20 @@ class BFS(Algorithm):
             self.visited.append(currentNode)
             for n in neighbors:
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                if(currentNeighborNode in self.visited or currentNeighborNode in self.unVisited or
-                        currentNeighborNode.number in self.GUI.blocked):
+                #if we've already visited this neighbor, move on to another node
+                if(currentNeighborNode in self.visited):
                     continue
-                currentNeighborNode.parent = currentNode
-                print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
-                #If one of the neighbors is the node we are looking for
-                if currentNeighborNode.number == self.endNodeNumber:
-                    #print("Found node!")
-                    self.foundGoal = True
-                self.unVisited.append(currentNeighborNode)
+                # if we haven't already marked it as unvisited
+                if(currentNeighborNode not in self.unVisited):
+                    #if it's a blocked node (obstacle), we shouldn't add it to unvisited nodes
+                    if(currentNeighborNode.number in self.GUI.blocked):
+                        continue
+                    currentNeighborNode.parent = currentNode
+                    print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
+                    #If one of the neighbors is the node we are looking for
+                    if currentNeighborNode.number == self.endNodeNumber:
+                        self.foundGoal = True
+                    self.unVisited.append(currentNeighborNode)
 
         #If we have found the node
         if(self.foundGoal):
@@ -72,8 +75,6 @@ class BFS(Algorithm):
                 for node in finalPath[1:-1]:
                     time.sleep(.05)
                     self.updatePlot(node, "blue")
-
-
 
         else:
             print("Could Not Find Node")

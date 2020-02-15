@@ -1,3 +1,4 @@
+#TODO: GETS STUCK IN EDGECOST WHILE LOOP
 from Algorithm import *
 import random
 import time
@@ -8,24 +9,48 @@ class Dijkstra_2(Algorithm):
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
+    # def getEdgeCost(self, parentNode, neighborNode):
+    #     #Arbitrarty heuristic so that cost to get to node is not uniform
+    #     #Also, we want the cost to be different depending on the parent ;)
+    #     seed = parentNode.number*neighborNode.number
+    #     random.seed(seed)
+    #     costToExplore = random.random() * 6 #10
+    #     #print("cost:", node.number, costToExplore)
+    #     #Backtrack to the source to see the current
+    #     #We are going to add the cost to traverse from the parent
+    #     #In case we have some cheaper path through a different node
+    #     nodeCopy = parentNode
+    #     while(nodeCopy.parent != None):
+    #         parentNodeCost = nodeCopy.parent.costToExplore
+    #         costToExplore += parentNodeCost
+    #         #print("Node:", nodeCopy.number, "Cost:", costToExplore)
+    #         nodeCopy = nodeCopy.parent
+    #     #return 1
+    #     #print("Total Cost to go to:", node.number, "is:", costToExplore)
+    #     return costToExplore
+
+    #Change get edge cost for 8 connected
     def getEdgeCost(self, parentNode, neighborNode):
-        #Arbitrarty heuristic so that cost to get to node is not uniform
-        #Also, we want the cost to be different depending on the parent ;)
-        seed = parentNode.number*neighborNode.number
-        random.seed(seed)
-        costToExplore = random.random() * 6 #10
+        # get distance between nodes
+        if((abs(parentNode.number - neighborNode.number) == 1) or (abs(parentNode.number - neighborNode.number) == self.graph.nodesWide)):
+            costToExplore = 1
+        else:
+            costToExplore = 1.41
         #print("cost:", node.number, costToExplore)
         #Backtrack to the source to see the current
         #We are going to add the cost to traverse from the parent
         #In case we have some cheaper path through a different node
         nodeCopy = parentNode
+        print("Parent:", parentNode.number, "Neighbor:", neighborNode.number)
         while(nodeCopy.parent != None):
-            parentNodeCost = nodeCopy.parent.costToExplore
+            parentNodeCost = nodeCopy.costToExplore
+            # print("Parent to: ", neighborNode.number, "is: ", nodeCopy.number)
+            # print("Cost of: ", nodeCopy.number, "is: ", parentNodeCost)
             costToExplore += parentNodeCost
             #print("Node:", nodeCopy.number, "Cost:", costToExplore)
             nodeCopy = nodeCopy.parent
         #return 1
-        #print("Total Cost to go to:", node.number, "is:", costToExplore)
+        print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
         return costToExplore
 
     def run(self):
@@ -59,7 +84,6 @@ class Dijkstra_2(Algorithm):
             #set the neighbors as the current node's neighbors
             currentNode.neighbors = neighbors
             #This is for plotting: get the row and column of the node
-            (row, col) = self.graph.getNodeIndexes(currentNode.number)
             if (self.GUI is not None):
                 if (currentNode.number != self.startNodeNumber):
                     time.sleep(.05)
@@ -68,37 +92,51 @@ class Dijkstra_2(Algorithm):
             totalPath.append(currentNode.number)
             #Ok, we are visiting this node
             print("Visiting: " + str(currentNode.number))
-            #self.visited.append(currentNode.number)
+            self.visited.append(currentNode.number)
             #For each of the neighbors
             for n in neighbors:
-                #We are going to find the edge to each one of the neighbors, and add it
-                #to our priority queue (nodes we haven't visited)
-                #If we have visited it before
-                if(n in self.unVisited):
-                    #only move on if the its parent is different than our current node
-                    currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                    if(currentNeighborNode.parent == currentNode):
-                        continue
-                if n in self.GUI.blocked:
+                # current neighbor node
+                if(n in self.visited):
                     continue
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                #Find the edge cost to this node (Change this function to include both nodes, current and neighbor)
+                # if the node does not have a parent yet
+                if(currentNeighborNode.parent == None and currentNeighborNode.number != 0):
+                    currentNeighborNode.parent = currentNode
+                #We are going to find the edge to each one of the neighbors, and add it
+                #to our priority queue (nodes we haven't visited)
+                #If we have already marked it as unvisited before
+                # #TODO: Why is this here
+                # if(n in self.unVisited):
+                #     #Go to the next iteration of the loop if
+                #     currentNeighborNode = self.graph.makeNodeFromNumber(n)
+                #     if(currentNeighborNode.parent == currentNode):
+                #         continue
+                # if(n in self.visited):
+                #     continue
+                # if the node is blocked, don't add it to unvisited
+                if n in self.GUI.blocked:
+                    continue
+
+                #Find the edge cost to this node
                 costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
-                # If the new found cost is lower, we should replace it in the queue
+                # If the new found cost is lower, we update it
                 if(costToExplore < currentNeighborNode.costToExplore):
+                    #if this isn't the  first time we've changed the cost of the node
                     if(currentNeighborNode.costToExplore < sys.maxsize):
                         # print("New Cost:",costToExplore, "Old Cost: ", currentNeighborNode.costToExplore)
                         print("FOUND AN ACTUAL IMPROVEMENT")
+                    #update the edge cost
                     currentNeighborNode.costToExplore = costToExplore
                     #set the new parent of the node
                     currentNeighborNode.parent = currentNode
-                    print("Adding to unvisited: " + str(currentNeighborNode.number) + ", Parent is: " + str(currentNode.number), "Cost: ", costToExplore)
+                    print("Adding to unvisited: " + str(currentNeighborNode.number) + ", Parent is: " + str(currentNode.number), "Cost: ", currentNeighborNode.costToExplore)
+                    #add it back into unvisited
                     self.unVisited.append(currentNeighborNode)
                 #If one of the neighbors is the node we are looking for
                 if n == self.endNodeNumber:
                     #print("Found node!")
                     self.foundGoal = True
-            self.visited.append(currentNode.number)
+            #self.visited.append(currentNode.number)
             #sort the list
             self.unVisited.sort(key=lambda x: x.costToExplore)
             [print(i.number, i.costToExplore) for i in self.unVisited]
