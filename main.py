@@ -5,15 +5,16 @@
 # 4) if start is (0,0), and place end, start disappears --> I think done
 # 5) Check if for text GUI valid nodes are chosen
 # 6) Pad it so that the grid isn't just in the top left corner --> Done
-# 7) Make map larger or smaller (put each button in a frame of a certain size and fill to frame)
-# 8) Turtle
-# 9) Implement the other algorithms 
+# 7) Turtle
+# 8) Implement the other algorithms (A* and WA*) --> I think done
 
 from Graph import *
 from BFS import *
 from DFS import *
 from Dijkstra_2 import *
 from tkinter import *
+from A_Star import *
+from WA_Star import *
 from turtle import ScrolledCanvas, RawTurtle, TurtleScreen
 
 class GUI():
@@ -28,7 +29,7 @@ class GUI():
         self.startNode = None
         self.endNode = None
         self.blocked = []
-        self.g = Graph(nodesTall=10, nodesWide=10)
+        self.g = Graph(nodesTall=20, nodesWide=20)
         # self.startIndexes = g.getNodeIndexes(startNode)
         # self.endIndexes = g.getNodeIndexes(endNode)
         self.selectingStart = False
@@ -45,7 +46,7 @@ class GUI():
         self.makeGrid(self.g.nodesTall, self.g.nodesWide)
 
 
-    def makeGrid(self,nodesTall = 10, nodesWide = 10):
+    def makeGrid(self,nodesTall = 20, nodesWide = 20):
         self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = None
         self.endNode = None
@@ -53,7 +54,7 @@ class GUI():
         for i in range(nodesTall):
             for j in range(nodesWide):
                 number = self.g.getNodeNumber(i, j)
-                self.nodes[number] = Button(self.gridFrame, height=int(30/nodesTall), width=int(60/nodesWide),
+                self.nodes[number] = Button(self.gridFrame, height=1, width=2,
                                             command=lambda number = number: self.select(number), bg = "white")
                 self.nodes[number].grid(row = i, column = j)
 
@@ -102,14 +103,19 @@ class GUI():
         elif alg.get() == "BFS":
             bfs = BFS(self.g,self.startNode, self.endNode, GUI = self)
             bfs.run()
+        elif alg.get() == "A*":
+            a_star = A_Star(self.g, self.startNode, self.endNode, GUI = self)
+            a_star.run()
+        elif alg.get() == "WA*":
+            wa_star = WA_Star(self.g, self.startNode, self.endNode, GUI = self)
+            wa_star.run()
         else:
-            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, GUI = self)
+            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, GUI=self)
             dijkstra.run()
-
     def homeScreen(self):
         drop = StringVar(self.buttonFrame)
         # Dictionary with options
-        choices = ['BFS', 'DFS', 'Dijkstra']
+        choices = ['BFS', 'DFS', 'Dijkstra', 'A*', 'WA*']
         drop.set(choices[0])  # set the default option
         popupMenu = OptionMenu(self.buttonFrame, drop, *choices)
         Label(self.buttonFrame, text="Choose Search Algorithm").grid(row=0, column=1)

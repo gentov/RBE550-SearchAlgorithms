@@ -18,6 +18,7 @@ class Node():
         self.parent = None
         self.neighbors = [None]*4
         self.costToExplore = sys.maxsize
+        self.totalCost = sys.maxsize
     def getNeighbors(self):
         return self.neighbors
     def getParents(self):

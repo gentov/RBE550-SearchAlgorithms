@@ -25,7 +25,7 @@ class DFS(Algorithm):
         #We mark the first node as unvisited
         self.unVisited.append(currentNode)
         while(self.foundGoal != True and len(self.unVisited) != 0):
-            time.sleep(.05)
+            time.sleep(.02)
             #pop the unvisited node off the top
             # currentNodeNumber = stack.pop(0)
             currentNode = self.unVisited.pop(0)
@@ -100,7 +100,7 @@ class DFS(Algorithm):
             print("Final path from start to end as found by DFS" , finalPath)
             if (self.GUI is not None):
                 for node in finalPath[1:-1]:
-                    time.sleep(.05)
+                    time.sleep(.02)
                     self.updatePlot(node, "blue")
 
         else:

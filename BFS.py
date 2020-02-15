@@ -23,7 +23,7 @@ class BFS(Algorithm):
             currentNode = self.unVisited.pop(0)
             if(self.GUI is not None):
                 if(currentNode.number != self.startNodeNumber):
-                    time.sleep(.05)
+                    time.sleep(.02)
                     self.updatePlot(currentNode.number, "pink")
             #currentNode = self.graph.makeNodeFromNumber(currentNode.number)
             neighbors = self.graph.getNodeNeighbors(currentNode.number)
@@ -73,7 +73,7 @@ class BFS(Algorithm):
             del self.unVisited [:]
             if (self.GUI is not None):
                 for node in finalPath[1:-1]:
-                    time.sleep(.05)
+                    time.sleep(.02)
                     self.updatePlot(node, "blue")
 
         else:
