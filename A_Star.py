@@ -1,4 +1,3 @@
-#TODO: Something wrong with cost
 from Algorithm import *
 import random
 import time
@@ -8,6 +7,27 @@ class A_Star(Algorithm):
             super().__init__(graph,startNodeNumber, endNodeNumber, GUI)
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
+
+    def getFourEdgeCost(self, parentNode, neighborNode):
+
+        # get distance between nodes
+        seed = parentNode.number * neighborNode.number
+        random.seed(seed)
+        costToExplore = random.random() * 6  # 10
+        # print("cost:", node.number, costToExplore)
+        # Backtrack to the source to see the current
+        # We are going to add the cost to traverse from the parent
+        # In case we have some cheaper path through a different node
+        nodeCopy = parentNode
+        print("Parent:", parentNode.number, "Neighbor:", neighborNode.number)
+        if (nodeCopy.parent != None):
+            parentNodeCost = nodeCopy.costToExplore
+            # print("Parent to: ", neighborNode.number, "is: ", nodeCopy.number)
+            # print("Cost of: ", nodeCopy.number, "is: ", parentNodeCost)
+            costToExplore += parentNodeCost
+        # return 1
+        print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
+        return costToExplore
 
     # #Change get edge cost for 8 connected
     def getEdgeCost(self, parentNode, neighborNode):
@@ -31,29 +51,6 @@ class A_Star(Algorithm):
         # return 1
         print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
         return costToExplore
-
-    #Change get edge cost for 8 connected
-    # def getEdgeCost(self, parentNode, neighborNode):
-    #     # get distance between nodes
-    #     seed = parentNode.number * neighborNode.number
-    #     random.seed(seed)
-    #     costToExplore = random.random() * 6  # 10
-    #     #print("cost:", node.number, costToExplore)
-    #     #Backtrack to the source to see the current
-    #     #We are going to add the cost to traverse from the parent
-    #     #In case we have some cheaper path through a different node
-    #     nodeCopy = parentNode
-    #     print("Parent:", parentNode.number, "Neighbor:", neighborNode.number)
-    #     while(nodeCopy.parent != None):
-    #         parentNodeCost = nodeCopy.costToExplore
-    #         # print("Parent to: ", neighborNode.number, "is: ", nodeCopy.number)
-    #         # print("Cost of: ", nodeCopy.number, "is: ", parentNodeCost)
-    #         costToExplore += parentNodeCost
-    #         #print("Node:", nodeCopy.number, "Cost:", costToExplore)
-    #         nodeCopy = nodeCopy.parent
-    #     #return 1
-    #     print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
-    #     return costToExplore
 
     # #Change get edge cost for 8 connected
     def getHeuristic(self, neighborNode):
@@ -92,7 +89,10 @@ class A_Star(Algorithm):
             #Let's explore the least expensive node
             currentNode = self.unVisited.pop(0)
             #find the nodes neighbors
-            neighbors = self.graph.getNodeNeighbors(currentNode.number)
+            if (self.GUI.fourConnected.get()):
+                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            else:
+                neighbors = self.graph.getNodeNeighbors(currentNode.number)
             #set the neighbors as the current node's neighbors
             currentNode.neighbors = neighbors
             if currentNode.number == self.endNodeNumber:
@@ -101,7 +101,7 @@ class A_Star(Algorithm):
             #This is for plotting: get the row and column of the node
             if (self.GUI is not None):
                 if ((currentNode.number != self.startNodeNumber) and (currentNode.number != self.endNodeNumber)):
-                    time.sleep(.02)
+                    time.sleep(float(1)/self.GUI.speed.get())
                     self.updatePlot(currentNode.number, "pink")
             #To the total path, add this node
             totalPath.append(currentNode.number)
@@ -124,7 +124,11 @@ class A_Star(Algorithm):
                     continue
 
                 #Find the edge cost to this node
-                costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
+                # Find the edge cost to this node
+                if (self.GUI.fourConnected.get()):
+                    costToExplore = self.getFourEdgeCost(currentNode, currentNeighborNode)
+                else:
+                    costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
                 heuristicCost = self.getHeuristic(currentNeighborNode)
                 currentNeighborNode.totalCost = costToExplore + heuristicCost
                 # If the new found cost is lower, we update it
@@ -152,7 +156,7 @@ class A_Star(Algorithm):
             #List to hold final path
             finalPath = []
             #Print the total path
-            print("Total path taken by Dijkstra's:", totalPath)
+            print("Total path taken by search:", totalPath)
             #We are going to look at everyone's parents
             node = currentNode
             #The last visited node is the end-node's parent, append it first
@@ -169,9 +173,9 @@ class A_Star(Algorithm):
             finalPath.append(self.endNodeNumber)
             if (self.GUI is not None):
                 for node in finalPath[1:-2]:
-                    time.sleep(.02)
+                    time.sleep(float(1)/self.GUI.speed.get())
                     self.updatePlot(node, "blue")
-            print("Final path from start to end as found by Dijkstra's:" , finalPath)
+            print("Final path from start to end as found by search:" , finalPath)
 
         else:
             print("Could Not Find Node")

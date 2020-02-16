@@ -7,6 +7,8 @@
 # 6) Pad it so that the grid isn't just in the top left corner --> Done
 # 7) Turtle
 # 8) Implement the other algorithms (A* and WA*) --> I think done
+# 9) Let user choose four connected or 8 connected
+# 10) Bug with reset sometimes
 
 from Graph import *
 from BFS import *
@@ -24,29 +26,31 @@ class GUI():
         #self.win.attributes("-fullscreen", True)
         self.win.geometry('1000x700')
         self.win.configure(background="grey")
-        self.canvas = Canvas(self.win, width=600, height=800, bg="grey", highlightthickness=0)
+        self.canvas = Canvas(self.win, width=700, height=800, bg="grey", highlightthickness=0)
 
         self.startNode = None
         self.endNode = None
         self.blocked = []
-        self.g = Graph(nodesTall=20, nodesWide=20)
+        self.g = Graph(nodesTall=25, nodesWide=30)
         # self.startIndexes = g.getNodeIndexes(startNode)
         # self.endIndexes = g.getNodeIndexes(endNode)
         self.selectingStart = False
         self.selectingEnd = False
         self.selectingObs = False
         self.deletingObs = False
+        self.fourConnected = IntVar()
         self.nodes = {}
         #This is the frame for the grid
         self.gridFrame = Frame(self.win)
-        self.gridFrame.place(relx = .1, rely = .1)
+        self.gridFrame.place(relx = .05, rely = .05)
         #This is a frame for buttons to the right of the grid
         self.buttonFrame = Frame(self.win, bg = "grey")
-        self.buttonFrame.place(relx=.65, rely=.2)
+        self.buttonFrame.place(relx=.79, rely=.2)
         self.makeGrid(self.g.nodesTall, self.g.nodesWide)
+        self.speed = None
 
 
-    def makeGrid(self,nodesTall = 20, nodesWide = 20):
+    def makeGrid(self,nodesTall = 25, nodesWide = 30):
         self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = None
         self.endNode = None
@@ -57,6 +61,16 @@ class GUI():
                 self.nodes[number] = Button(self.gridFrame, height=1, width=2,
                                             command=lambda number = number: self.select(number), bg = "white")
                 self.nodes[number].grid(row = i, column = j)
+
+    def resetGrid(self,nodesTall = 25, nodesWide = 30):
+        self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
+        self.startNode = None
+        self.endNode = None
+        self.blocked = []
+        for i in range(nodesTall):
+            for j in range(nodesWide):
+                number = self.g.getNodeNumber(i, j)
+                self.nodes[number].configure(bg = "white")
 
     def select(self, number):
         if(self.selectingStart):
@@ -120,16 +134,23 @@ class GUI():
         popupMenu = OptionMenu(self.buttonFrame, drop, *choices)
         Label(self.buttonFrame, text="Choose Search Algorithm").grid(row=0, column=1)
         popupMenu.grid(row=1, column=1, rowspan=2, pady = 5)
+        fourConnect = Checkbutton(self.buttonFrame, text="Four Connected", variable=self.fourConnected)
+        fourConnect.grid(row=3, column=1, pady=10)
         selectStart = Button(self.buttonFrame, height=3, width=8,  text = "Place Start", command=self.updateSelectStart)
-        selectStart.grid(row = 3, column = 1, pady = 5)
+        selectStart.grid(row = 4, column = 1, pady = 5)
         selectEnd = Button(self.buttonFrame, height=3, width=8, text="Place End", command=self.updateSelectEnd)
-        selectEnd.grid(row = 4, column = 1,pady = 5)
-        reset = Button(self.buttonFrame, height=3, width=8, text="Reset", command=self.makeGrid)
-        reset.grid(row=5, column= 1, pady = 5)
+        selectEnd.grid(row = 5, column = 1,pady = 5)
+        reset = Button(self.buttonFrame, height=3, width=8, text="Reset", command=self.resetGrid)
+        reset.grid(row=6, column= 1, pady = 5)
         # Create a Tkinter variable
         runAlgorithm = Button(self.buttonFrame, height=3, width=12, text="Run",
                               command=lambda alg=drop: self.runSearchAlgorithm(drop))
-        runAlgorithm.grid(row=6, column=1, pady = 20)
+        runAlgorithm.grid(row=7, column=1, pady = 20)
+        Label(self.buttonFrame, text="Speed").grid(row=3, column=2, rowspan = 2)
+        self.speed = Scale(self.buttonFrame, from_= 100, to = 1)
+        self.speed.set(50)
+        self.speed.grid(row = 4, column = 2, rowspan = 2, pady = 40)
+
         self.win.update()
 
 if __name__ == '__main__':
@@ -148,7 +169,7 @@ if __name__ == '__main__':
         endNode = int(endNode)
         alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
         g = Graph(nodesTall=10, nodesWide=10)
-        while(alg not in ["1", "2", "3"]):
+        while(alg not in ["1", "2", "3", "4", "5"]):
             alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
         if alg == "1":
             bfs = BFS(g, startNode, endNode)
@@ -159,3 +180,9 @@ if __name__ == '__main__':
         elif alg == "3":
             dijkstra = Dijkstra_2(g, startNode, endNode)
             dijkstra.run()
+        elif alg == "4":
+            a_star = A_Star(g, startNode, endNode)
+            a_star.run()
+        elif alg == "5":
+            wa_star = WA_Star(g, startNode, endNode)
+            wa_star.run()

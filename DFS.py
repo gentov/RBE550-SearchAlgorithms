@@ -25,7 +25,7 @@ class DFS(Algorithm):
         #We mark the first node as unvisited
         self.unVisited.append(currentNode)
         while(self.foundGoal != True and len(self.unVisited) != 0):
-            time.sleep(.02)
+            time.sleep(float(1)/self.GUI.speed.get())
             #pop the unvisited node off the top
             # currentNodeNumber = stack.pop(0)
             currentNode = self.unVisited.pop(0)
@@ -33,7 +33,10 @@ class DFS(Algorithm):
                 if (currentNode.number != self.startNodeNumber):
                     self.updatePlot(currentNode.number, "pink")
             print("Visiting: ", currentNode.number)
-            neighbors = self.graph.getNodeNeighbors(currentNode.number)
+            if (self.GUI.fourConnected.get()):
+                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            else:
+                neighbors = self.graph.getNodeNeighbors(currentNode.number)
             print("Node Neighbors are: ", neighbors)
             currentNode.neighbors = neighbors
             #this node has no neighbors, so our current node becomes the current node's parent
@@ -100,7 +103,7 @@ class DFS(Algorithm):
             print("Final path from start to end as found by DFS" , finalPath)
             if (self.GUI is not None):
                 for node in finalPath[1:-1]:
-                    time.sleep(.02)
+                    time.sleep(float(1)/self.GUI.speed.get())
                     self.updatePlot(node, "blue")
 
         else:

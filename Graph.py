@@ -63,6 +63,26 @@ class Graph():
 
         return neighbors
 
+    def getFourNodeNeighbors(self, nodeNumber):
+        # N,E,S,W
+        neighbors = []
+        row = self.getNodeIndexes(nodeNumber)[0]
+        column = self.getNodeIndexes(nodeNumber)[1]
+        #If we have neighbors to the north
+        if(row > 0):
+            neighbors.append(self.graph[row - 1][column].number)
+        # If we have neighbors to the east
+        if (column < self.nodesWide - 1):
+            neighbors.append(self.graph[row][column + 1].number)
+        # If we have neighbors to the south
+        if (row < self.nodesTall - 1):
+            neighbors.append(self.graph[row + 1][column].number)
+        # If we have neighbors to the west
+        if (column > 0):
+            neighbors.append(self.graph[row][column - 1].number)
+
+        return neighbors
+
     def makeNodeFromNumber(self, nodeNumber):
         # Grab the indexes of that node so we can get our node object
         nodeIndexes = self.getNodeIndexes(nodeNumber)

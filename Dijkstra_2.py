@@ -8,30 +8,27 @@ class Dijkstra_2(Algorithm):
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
-    #Change get edge cost for 8 connected
-    # def getEdgeCost(self, parentNode, neighborNode):
-    #     # get distance between nodes
-    #     seed = parentNode.number * neighborNode.number
-    #     random.seed(seed)
-    #     costToExplore = random.random() * 6  # 10
-    #     #print("cost:", node.number, costToExplore)
-    #     #Backtrack to the source to see the current
-    #     #We are going to add the cost to traverse from the parent
-    #     #In case we have some cheaper path through a different node
-    #     nodeCopy = parentNode
-    #     print("Parent:", parentNode.number, "Neighbor:", neighborNode.number)
-    #     while(nodeCopy.parent != None):
-    #         parentNodeCost = nodeCopy.costToExplore
-    #         # print("Parent to: ", neighborNode.number, "is: ", nodeCopy.number)
-    #         # print("Cost of: ", nodeCopy.number, "is: ", parentNodeCost)
-    #         costToExplore += parentNodeCost
-    #         #print("Node:", nodeCopy.number, "Cost:", costToExplore)
-    #         nodeCopy = nodeCopy.parent
-    #     #return 1
-    #     print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
-    #     return costToExplore
+    def getFourEdgeCost(self, parentNode, neighborNode):
 
-    # #Change get edge cost for 8 connected
+        # get distance between nodes
+        seed = parentNode.number * neighborNode.number
+        random.seed(seed)
+        costToExplore = random.random() * 6  # 10
+        # print("cost:", node.number, costToExplore)
+        # Backtrack to the source to see the current
+        # We are going to add the cost to traverse from the parent
+        # In case we have some cheaper path through a different node
+        nodeCopy = parentNode
+        print("Parent:", parentNode.number, "Neighbor:", neighborNode.number)
+        if (nodeCopy.parent != None):
+            parentNodeCost = nodeCopy.costToExplore
+            # print("Parent to: ", neighborNode.number, "is: ", nodeCopy.number)
+            # print("Cost of: ", nodeCopy.number, "is: ", parentNodeCost)
+            costToExplore += parentNodeCost
+        # return 1
+        print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
+        return costToExplore
+
     def getEdgeCost(self, parentNode, neighborNode):
         # get distance between nodes
         if ((abs(parentNode.number - neighborNode.number) == 1) or (
@@ -84,13 +81,16 @@ class Dijkstra_2(Algorithm):
                 # print("Found node!")
                 self.foundGoal = True
             #find the nodes neighbors
-            neighbors = self.graph.getNodeNeighbors(currentNode.number)
+            if (self.GUI.fourConnected.get()):
+                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            else:
+                neighbors = self.graph.getNodeNeighbors(currentNode.number)
             #set the neighbors as the current node's neighbors
             currentNode.neighbors = neighbors
             #This is for plotting: get the row and column of the node
             if (self.GUI is not None):
                 if ((currentNode.number != self.startNodeNumber) and (currentNode.number != self.endNodeNumber)):
-                    time.sleep(.02)
+                    time.sleep(float(1)/self.GUI.speed.get())
                     self.updatePlot(currentNode.number, "pink")
             #To the total path, add this node
             totalPath.append(currentNode.number)
@@ -102,27 +102,20 @@ class Dijkstra_2(Algorithm):
                 # current neighbor node
                 if(n in self.visited):
                     continue
+
                 currentNeighborNode = self.graph.makeNodeFromNumber(n)
                 # if the node does not have a parent yet
                 if(currentNeighborNode.parent == None and currentNeighborNode.number != 0):
                     currentNeighborNode.parent = currentNode
-                #We are going to find the edge to each one of the neighbors, and add it
-                #to our priority queue (nodes we haven't visited)
-                #If we have already marked it as unvisited before
-                # #TODO: Why is this here
-                # if(n in self.unVisited):
-                #     #Go to the next iteration of the loop if
-                #     currentNeighborNode = self.graph.makeNodeFromNumber(n)
-                #     if(currentNeighborNode.parent == currentNode):
-                #         continue
-                # if(n in self.visited):
-                #     continue
-                # if the node is blocked, don't add it to unvisited
+
                 if n in self.GUI.blocked:
                     continue
 
                 #Find the edge cost to this node
-                costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
+                if (self.GUI.fourConnected.get()):
+                    costToExplore = self.getFourEdgeCost(currentNode, currentNeighborNode)
+                else:
+                    costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
                 # If the new found cost is lower, we update it
                 if(costToExplore < currentNeighborNode.costToExplore):
                     #if this isn't the  first time we've changed the cost of the node
@@ -168,7 +161,7 @@ class Dijkstra_2(Algorithm):
             finalPath.append(self.endNodeNumber)
             if (self.GUI is not None):
                 for node in finalPath[1:-2]:
-                    time.sleep(.02)
+                    time.sleep(float(1)/self.GUI.speed.get())
                     self.updatePlot(node, "blue")
             print("Final path from start to end as found by Dijkstra's:" , finalPath)
 
