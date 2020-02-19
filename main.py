@@ -8,6 +8,7 @@
 # 7) Let user choose weight for WA* --> done
 # 8) Implement the other algorithms (A* and WA*) --> I think done
 # 9) Let user choose four connected or 8 connected -> done
+# 10) Bug with GUI blocked nodes
 
 from Graph import *
 from BFS import *
@@ -103,9 +104,14 @@ class GUI():
             self.updateSelectEnd()
         else:
             # Placing an obstable
-            obstable = self.nodes[number].configure(bg="black")
-            self.win.update()
-            self.blocked.append(number)
+            if(number not in self.blocked):
+                obstable = self.nodes[number].configure(bg="black")
+                self.win.update()
+                self.blocked.append(number)
+            else:
+                clear = self.nodes[number].configure(bg="white")
+                self.win.update()
+                self.blocked.remove(number)
 
     def updateSelectStart(self):
         if self.selectingStart == False:
@@ -183,25 +189,25 @@ if __name__ == '__main__':
     #otherwise:
     else:
         g = Graph(nodesTall=25, nodesWide=30)
-        startNode = input("What is your start node? (0 to " + str(g.nodesWide*g.nodesTall) +")")
+        startNode = input("What is your start node? (0 to " + str(g.nodesWide*g.nodesTall - 1) +")")
         startNode = int(startNode)
-        while (startNode < 0 or startNode > g.nodesWide * g.nodesTall):
-            print("Start node must be between 0 and " + str(g.nodesWide * g.nodesTall))
-            startNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+        while (startNode < 0 or startNode > g.nodesWide * g.nodesTall - 1):
+            print("Start node must be between 0 and " + str(g.nodesWide * g.nodesTall - 1))
+            startNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall - 1) + ")")
             startNode = int(startNode)
 
-        endNode = input("What is your end node? (0 to " + str(g.nodesWide*g.nodesTall) +")")
+        endNode = input("What is your end node? (0 to " + str(g.nodesWide*g.nodesTall - 1) +")")
         endNode = int(endNode)
-        while (endNode < 0 or endNode > g.nodesWide * g.nodesTall):
-            print("End node must be between 0 and " + str(g.nodesWide * g.nodesTall))
-            endNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+        while (endNode < 0 or endNode > g.nodesWide * g.nodesTall - 1):
+            print("End node must be between 0 and " + str(g.nodesWide * g.nodesTall - 1))
+            endNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall - 1) + ")")
             endNode = int(endNode)
 
         while(endNode == startNode):
             print("End node must not be start node")
-            startNode = input("What is your start node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+            startNode = input("What is your start node? (0 to " + str(g.nodesWide * g.nodesTall - 1) + ")")
             startNode = int(startNode)
-            endNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+            endNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall - 1) + ")")
             endNode = int(endNode)
 
         alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's, 4: A*, 5: WA*)")

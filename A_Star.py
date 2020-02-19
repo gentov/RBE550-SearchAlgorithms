@@ -69,9 +69,9 @@ class A_Star(Algorithm):
         totalPath = []
         """
          PseduoCode for A*:
-         It is essentially BFS with weighted edges
+         Like Dijkstra's with heuristic
          Start with the start node:
-         1) For each of the neighbors, find their cost, and put them in the 
+         1) For each of the neighbors, find their cost + heuristic, and put them in the 
          queue according to their cost to explore (so sort neighbors before popping)
          2) This time, we can revisit nodes as long as their cost is lower!
             This is because its cost to explore could change
