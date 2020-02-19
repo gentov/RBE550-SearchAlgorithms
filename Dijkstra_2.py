@@ -81,8 +81,11 @@ class Dijkstra_2(Algorithm):
                 # print("Found node!")
                 self.foundGoal = True
             #find the nodes neighbors
-            if (self.GUI.fourConnected.get()):
-                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            if (self.GUI is not None):
+                if (self.GUI.fourConnected.get()):
+                    neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+                else:
+                    neighbors = self.graph.getNodeNeighbors(currentNode.number)
             else:
                 neighbors = self.graph.getNodeNeighbors(currentNode.number)
             #set the neighbors as the current node's neighbors
@@ -107,13 +110,16 @@ class Dijkstra_2(Algorithm):
                 # if the node does not have a parent yet
                 if(currentNeighborNode.parent == None and currentNeighborNode.number != 0):
                     currentNeighborNode.parent = currentNode
-
-                if n in self.GUI.blocked:
-                    continue
+                if (self.GUI is not None):
+                    if n in self.GUI.blocked:
+                        continue
 
                 #Find the edge cost to this node
-                if (self.GUI.fourConnected.get()):
-                    costToExplore = self.getFourEdgeCost(currentNode, currentNeighborNode)
+                if (self.GUI is not None):
+                    if (self.GUI.fourConnected.get()):
+                        costToExplore = self.getFourEdgeCost(currentNode, currentNeighborNode)
+                    else:
+                        costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
                 else:
                     costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
                 # If the new found cost is lower, we update it
@@ -136,7 +142,7 @@ class Dijkstra_2(Algorithm):
             #self.visited.append(currentNode.number)
             #sort the list
             self.unVisited.sort(key=lambda x: x.costToExplore)
-            [print(i.number, i.costToExplore) for i in self.unVisited]
+            #[print(i.number, i.costToExplore) for i in self.unVisited]
 
 
         #If we have found the node

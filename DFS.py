@@ -33,10 +33,13 @@ class DFS(Algorithm):
                 if (currentNode.number != self.startNodeNumber):
                     self.updatePlot(currentNode.number, "pink")
             print("Visiting: ", currentNode.number)
-            if (self.GUI.fourConnected.get()):
-                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            if (self.GUI is not None):
+                if (self.GUI.fourConnected.get()):
+                    neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+                else:
+                    neighbors = self.graph.getNodeNeighbors(currentNode.number)
             else:
-                neighbors = self.graph.getNodeNeighbors(currentNode.number)
+                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
             print("Node Neighbors are: ", neighbors)
             currentNode.neighbors = neighbors
             #this node has no neighbors, so our current node becomes the current node's parent
@@ -55,8 +58,9 @@ class DFS(Algorithm):
             for i in range(len(neighbors)):
                 #We only want to check a neighbot if it is not blocked, otherwise, we don't do anything
                 #I can't just do: if in blocked continue, because if the last node is blocked, we won't ever backtrack
-                if (neighbors[i] in self.GUI.blocked):
-                    continue
+                if (self.GUI is not None):
+                    if (neighbors[i] in self.GUI.blocked):
+                        continue
                 #if the current neighbor has not been visited
                 if(self.graph.makeNodeFromNumber(neighbors[i]) not in self.visited):
                     currentNeighborNode = self.graph.makeNodeFromNumber(neighbors[i])

@@ -68,7 +68,7 @@ class A_Star(Algorithm):
         del self.unVisited[:]
         totalPath = []
         """
-         PseduoCode for Dijkstra:
+         PseduoCode for A*:
          It is essentially BFS with weighted edges
          Start with the start node:
          1) For each of the neighbors, find their cost, and put them in the 
@@ -89,8 +89,11 @@ class A_Star(Algorithm):
             #Let's explore the least expensive node
             currentNode = self.unVisited.pop(0)
             #find the nodes neighbors
-            if (self.GUI.fourConnected.get()):
-                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            if (self.GUI is not None):
+                if (self.GUI.fourConnected.get()):
+                    neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+                else:
+                    neighbors = self.graph.getNodeNeighbors(currentNode.number)
             else:
                 neighbors = self.graph.getNodeNeighbors(currentNode.number)
             #set the neighbors as the current node's neighbors
@@ -119,14 +122,17 @@ class A_Star(Algorithm):
                 # if the node does not have a parent yet
                 if(currentNeighborNode.parent == None and currentNeighborNode.number != 0):
                     currentNeighborNode.parent = currentNode
-
-                if n in self.GUI.blocked:
-                    continue
+                if (self.GUI is not None):
+                    if n in self.GUI.blocked:
+                        continue
 
                 #Find the edge cost to this node
                 # Find the edge cost to this node
-                if (self.GUI.fourConnected.get()):
-                    costToExplore = self.getFourEdgeCost(currentNode, currentNeighborNode)
+                if (self.GUI is not None):
+                    if (self.GUI.fourConnected.get()):
+                        costToExplore = self.getFourEdgeCost(currentNode, currentNeighborNode)
+                    else:
+                        costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
                 else:
                     costToExplore = self.getEdgeCost(currentNode, currentNeighborNode)
                 heuristicCost = self.getHeuristic(currentNeighborNode)
@@ -148,7 +154,6 @@ class A_Star(Algorithm):
             #self.visited.append(currentNode.number)
             #sort the list
             self.unVisited.sort(key=lambda x: x.totalCost)
-            [print(i.number, i.totalCost) for i in self.unVisited]
 
 
         #If we have found the node

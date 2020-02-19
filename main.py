@@ -1,14 +1,13 @@
 #TODO by 2/20:
 # 1) Won't backtrack with obstacles --> I think done
-# 2) Obstacle avoid --> Works, but I don't love it.
-# 3) Make sure you have placed a start and end when hit run
+# 2) Obstacle avoid --> done
+# 3) Make sure you have placed a start and end when hit run -> done
 # 4) if start is (0,0), and place end, start disappears --> I think done
-# 5) Check if for text GUI valid nodes are chosen
+# 5) Check if for text GUI valid nodes are chosen --> done
 # 6) Pad it so that the grid isn't just in the top left corner --> Done
-# 7) Turtle
+# 7) Let user choose weight for WA* --> done
 # 8) Implement the other algorithms (A* and WA*) --> I think done
-# 9) Let user choose four connected or 8 connected
-# 10) Bug with reset sometimes
+# 9) Let user choose four connected or 8 connected -> done
 
 from Graph import *
 from BFS import *
@@ -17,7 +16,7 @@ from Dijkstra_2 import *
 from tkinter import *
 from A_Star import *
 from WA_Star import *
-from turtle import ScrolledCanvas, RawTurtle, TurtleScreen
+from tkinter import simpledialog
 
 class GUI():
     def __init__(self):
@@ -47,14 +46,20 @@ class GUI():
         self.buttonFrame = Frame(self.win, bg = "grey")
         self.buttonFrame.place(relx=.79, rely=.2)
         self.makeGrid(self.g.nodesTall, self.g.nodesWide)
+        # self.plainFrame = Frame(self.win, bg='red', width=600, height=800)
+        # self.plainFrame.place(relx=.05, rely=.05)
+        # self.plainFrame.bind('<Button-1>', self.test)
         self.speed = None
 
+
+    def test(self, event):
+        print(event.x, event.y)
 
     def makeGrid(self,nodesTall = 25, nodesWide = 30):
         self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = None
         self.endNode = None
-        self.blocked = []
+        del self.blocked[:]
         for i in range(nodesTall):
             for j in range(nodesWide):
                 number = self.g.getNodeNumber(i, j)
@@ -66,7 +71,11 @@ class GUI():
         self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = None
         self.endNode = None
-        self.blocked = []
+        self.selectingStart = False
+        self.selectingEnd = False
+        self.selectingObs = False
+        self.deletingObs = False
+        del self.blocked[:]
         for i in range(nodesTall):
             for j in range(nodesWide):
                 number = self.g.getNodeNumber(i, j)
@@ -111,6 +120,8 @@ class GUI():
             self.selectingEnd = False
 
     def runSearchAlgorithm(self, alg):
+        if(self.startNode == None or self.endNode == None):
+            return
         if alg.get() == "DFS":
             dfs = DFS(self.g,self.startNode, self.endNode, GUI = self)
             dfs.run()
@@ -121,7 +132,10 @@ class GUI():
             a_star = A_Star(self.g, self.startNode, self.endNode, GUI = self)
             a_star.run()
         elif alg.get() == "WA*":
-            wa_star = WA_Star(self.g, self.startNode, self.endNode, GUI = self)
+            w = simpledialog.askinteger("Input", "Choose a weight for WA*",
+                                             parent=self.win,
+                                             minvalue=0, maxvalue=10000)
+            wa_star = WA_Star(self.g, self.startNode, self.endNode, weight = w, GUI = self)
             wa_star.run()
         else:
             dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, GUI=self)
@@ -155,6 +169,12 @@ class GUI():
 
 if __name__ == '__main__':
     #Ask the user if they want a gui, if they do
+    print("NOTE: The user has two options. They can choose to use the GUI which gives the user\r\n "
+          "a visual as well as options for a four or eight connected grid, speed, and the ability \r\n"
+          "to place obstacles. The second option is a text based option which narrates the solution. \r\n"
+          "The text based option does not include obstacles, and is four connected for BFS/DFS, and 8 \r\n"
+          "connected for A*, Dijkstra's and WA*. I've also kept the print out when you use the GUI, just \r\n"
+          "to make it clear how the GUI is thinking. \r\n")
     wantGui = input("Do you want to use the GUI? (y/n)")
     if wantGui == "y" or wantGui ==  "Y" or wantGui ==  "yes" or wantGui == "Yes" or wantGui == "YES":
         gui = GUI()
@@ -162,13 +182,29 @@ if __name__ == '__main__':
         gui.win.mainloop()
     #otherwise:
     else:
-        #TODO: Check if valid nodes
-        startNode = input("What is your start node? (0 to 99)")
+        g = Graph(nodesTall=25, nodesWide=30)
+        startNode = input("What is your start node? (0 to " + str(g.nodesWide*g.nodesTall) +")")
         startNode = int(startNode)
-        endNode = input("What is your end node? (0 to 99)")
+        while (startNode < 0 or startNode > g.nodesWide * g.nodesTall):
+            print("Start node must be between 0 and " + str(g.nodesWide * g.nodesTall))
+            startNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+            startNode = int(startNode)
+
+        endNode = input("What is your end node? (0 to " + str(g.nodesWide*g.nodesTall) +")")
         endNode = int(endNode)
-        alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
-        g = Graph(nodesTall=10, nodesWide=10)
+        while (endNode < 0 or endNode > g.nodesWide * g.nodesTall):
+            print("End node must be between 0 and " + str(g.nodesWide * g.nodesTall))
+            endNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+            endNode = int(endNode)
+
+        while(endNode == startNode):
+            print("End node must not be start node")
+            startNode = input("What is your start node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+            startNode = int(startNode)
+            endNode = input("What is your end node? (0 to " + str(g.nodesWide * g.nodesTall) + ")")
+            endNode = int(endNode)
+
+        alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's, 4: A*, 5: WA*)")
         while(alg not in ["1", "2", "3", "4", "5"]):
             alg = input("What algorithm do you want to use? (1: BFS, 2: DFS, 3: Dijkstra's)")
         if alg == "1":
@@ -184,5 +220,11 @@ if __name__ == '__main__':
             a_star = A_Star(g, startNode, endNode)
             a_star.run()
         elif alg == "5":
-            wa_star = WA_Star(g, startNode, endNode)
+            w = input("What weight would you like to use for WA* (1 to 10000)")
+            w = int(w)
+            while (w < 1 or w > 10000):
+                print("Weight must be between 0 and 10000")
+                w = input("What weight would you like to use for WA* (1 to 10000)")
+                w = int(w)
+            wa_star = WA_Star(g, startNode, endNode, weight=w)
             wa_star.run()

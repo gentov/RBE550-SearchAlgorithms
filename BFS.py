@@ -26,10 +26,13 @@ class BFS(Algorithm):
                     time.sleep(float(1)/self.GUI.speed.get())
                     self.updatePlot(currentNode.number, "pink")
             #currentNode = self.graph.makeNodeFromNumber(currentNode.number)
-            if(self.GUI.fourConnected.get()):
-                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+            if (self.GUI is not None):
+                if(self.GUI.fourConnected.get()):
+                    neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
+                else:
+                    neighbors = self.graph.getNodeNeighbors(currentNode.number)
             else:
-                neighbors = self.graph.getNodeNeighbors(currentNode.number)
+                neighbors = self.graph.getFourNodeNeighbors(currentNode.number)
             currentNode.neighbors = neighbors
             totalPath.append(currentNode.number)
             print("Visiting: " + str(currentNode.number))
@@ -42,8 +45,9 @@ class BFS(Algorithm):
                 # if we haven't already marked it as unvisited
                 if(currentNeighborNode not in self.unVisited):
                     #if it's a blocked node (obstacle), we shouldn't add it to unvisited nodes
-                    if(currentNeighborNode.number in self.GUI.blocked):
-                        continue
+                    if (self.GUI is not None):
+                        if(currentNeighborNode.number in self.GUI.blocked):
+                            continue
                     currentNeighborNode.parent = currentNode
                     print("Adding to unvisited: " + str(n) + ", Parent is: " + str(currentNeighborNode.parent.number))
                     #If one of the neighbors is the node we are looking for
