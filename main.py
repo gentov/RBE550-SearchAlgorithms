@@ -92,6 +92,8 @@ class GUI():
             self.win.update()
             self.startNode = number #self.g.getNodeNumber(row,column)
             self.updateSelectStart()
+            if (self.endNode in self.blocked):
+                self.blocked.remove(number)
 
         elif(self.selectingEnd):
             if(self.endNode is not None):
@@ -102,7 +104,11 @@ class GUI():
             self.win.update()
             self.endNode = number
             self.updateSelectEnd()
+            if(self.endNode in self.blocked):
+                self.blocked.remove(number)
         else:
+            if(number == self.startNode or number == self.endNode):
+                return
             # Placing an obstable
             if(number not in self.blocked):
                 obstable = self.nodes[number].configure(bg="black")
