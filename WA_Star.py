@@ -7,7 +7,7 @@ class WA_Star(A_Star):
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
-    # #Change get edge cost for 8 connected
+    #
     def getHeuristic(self, neighborNode):
         # get estimated distance to goal
         (row, col) = self.graph.getNodeIndexes(neighborNode.number)

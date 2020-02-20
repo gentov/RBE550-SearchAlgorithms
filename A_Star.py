@@ -15,7 +15,6 @@ class A_Star(Algorithm):
         random.seed(seed)
         costToExplore = random.random() * 6  # 10
         # print("cost:", node.number, costToExplore)
-        # Backtrack to the source to see the current
         # We are going to add the cost to traverse from the parent
         # In case we have some cheaper path through a different node
         nodeCopy = parentNode
@@ -38,7 +37,6 @@ class A_Star(Algorithm):
         else:
             costToExplore = 1.41
         # print("cost:", node.number, costToExplore)
-        # Backtrack to the source to see the current
         # We are going to add the cost to traverse from the parent
         # In case we have some cheaper path through a different node
         nodeCopy = parentNode
@@ -52,7 +50,7 @@ class A_Star(Algorithm):
         print("Total Cost to go to:", neighborNode.number, "is:", costToExplore)
         return costToExplore
 
-    # #Change get edge cost for 8 connected
+    #
     def getHeuristic(self, neighborNode):
         # get estimated distance to goal
         (row, col) = self.graph.getNodeIndexes(neighborNode.number)
