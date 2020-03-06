@@ -1,5 +1,9 @@
 
 from A_Star import *
+"""
+WA* inherits from A*, and changes the heuristic weight so that the algorithm puts more
+emphasis on the heuristic instead of edge costs
+"""
 class WA_Star(A_Star):
     def __init__(self, graph, startNodeNumber, endNodeNumber, weight = 5, GUI = None):
             super().__init__(graph,startNodeNumber, endNodeNumber, GUI)

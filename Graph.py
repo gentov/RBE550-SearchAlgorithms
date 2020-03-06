@@ -1,5 +1,9 @@
 from Node import *
 from tkinter import *
+"""
+the graph class handles all of the methods related to the grid. That includes: making it,
+finding node neighbors, and finding node indexes and coordinates.
+"""
 class Graph():
     def __init__(self, nodesTall = 4 ,nodesWide = 4):
         self.nodesTall = nodesTall

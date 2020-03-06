@@ -7,6 +7,7 @@ from Node import *
 from Graph import *
 from tkinter import *
 
+#Base class from which all algorithms inherit
 class Algorithm():
     def __init__(self,graph,startNodeNumber, endNodeNumber, GUI = None):
         self.visited = []

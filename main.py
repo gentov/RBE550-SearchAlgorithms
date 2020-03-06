@@ -13,12 +13,15 @@
 from Graph import *
 from BFS import *
 from DFS import *
-from Dijkstra_2 import *
+from Dijkstra import *
 from tkinter import *
 from A_Star import *
 from WA_Star import *
 from tkinter import simpledialog
 
+"""
+This handles all of the User interface functions
+"""
 class GUI():
     def __init__(self):
         self.win = Tk()
@@ -53,9 +56,7 @@ class GUI():
         self.speed = None
 
 
-    def test(self, event):
-        print(event.x, event.y)
-
+    # Makes grid, a button for each node
     def makeGrid(self,nodesTall = 25, nodesWide = 30):
         self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = None
@@ -68,6 +69,7 @@ class GUI():
                                             command=lambda number = number: self.select(number), bg = "white")
                 self.nodes[number].grid(row = i, column = j)
 
+    #Resets the map
     def resetGrid(self,nodesTall = 25, nodesWide = 30):
         self.g = Graph(nodesTall=nodesTall, nodesWide=nodesWide)
         self.startNode = None
@@ -82,6 +84,7 @@ class GUI():
                 number = self.g.getNodeNumber(i, j)
                 self.nodes[number].configure(bg = "white")
 
+    #allows user to select start, end, and obstacles
     def select(self, number):
         if(self.selectingStart):
             if(self.startNode is not None):
@@ -92,14 +95,15 @@ class GUI():
             self.win.update()
             self.startNode = number #self.g.getNodeNumber(row,column)
             self.updateSelectStart()
-            if (self.endNode in self.blocked):
+            #If we put the start on top of a blocked, remove blocked node
+            if (self.startNode in self.blocked):
                 self.blocked.remove(number)
 
         elif(self.selectingEnd):
             if(self.endNode is not None):
                 # Erasing old end node, by grabbing the old end and setting that button to white
                 oldNode = self.nodes[self.endNode].configure(bg="white")
-            # now place the new start where the user placed it and make it red
+            # now place the new start where the user placed it and make it green
             newNode = self.nodes[number].configure(bg="green")
             self.win.update()
             self.endNode = number
@@ -107,6 +111,7 @@ class GUI():
             if(self.endNode in self.blocked):
                 self.blocked.remove(number)
         else:
+            # can't place an obstacle on a start or end node
             if(number == self.startNode or number == self.endNode):
                 return
             # Placing an obstable
@@ -131,6 +136,7 @@ class GUI():
         elif self.selectingEnd == True:
             self.selectingEnd = False
 
+    #Run the algorithm of user's choice
     def runSearchAlgorithm(self, alg):
         if(self.startNode == None or self.endNode == None):
             return
@@ -150,8 +156,10 @@ class GUI():
             wa_star = WA_Star(self.g, self.startNode, self.endNode, weight = w, GUI = self)
             wa_star.run()
         else:
-            dijkstra = Dijkstra_2(self.g, self.startNode, self.endNode, GUI=self)
+            dijkstra = Dijkstra(self.g, self.startNode, self.endNode, GUI=self)
             dijkstra.run()
+
+    #Main screen
     def homeScreen(self):
         drop = StringVar(self.buttonFrame)
         # Dictionary with options
@@ -192,7 +200,7 @@ if __name__ == '__main__':
         gui = GUI()
         gui.homeScreen()
         gui.win.mainloop()
-    #otherwise:
+    #otherwise: text based GUI
     else:
         g = Graph(nodesTall=25, nodesWide=30)
         startNode = input("What is your start node? (0 to " + str(g.nodesWide*g.nodesTall - 1) +")")
@@ -226,7 +234,7 @@ if __name__ == '__main__':
             dfs = DFS(g, startNode, endNode)
             dfs.run()
         elif alg == "3":
-            dijkstra = Dijkstra_2(g, startNode, endNode)
+            dijkstra = Dijkstra(g, startNode, endNode)
             dijkstra.run()
         elif alg == "4":
             a_star = A_Star(g, startNode, endNode)
