@@ -140,7 +140,7 @@ class A_Star(Algorithm):
                     #if this isn't the  first time we've changed the cost of the node
                     if(currentNeighborNode.costToExplore < sys.maxsize):
                         # print("New Cost:",costToExplore, "Old Cost: ", currentNeighborNode.costToExplore)
-                        print("FOUND AN ACTUAL IMPROVEMENT")
+                        print("Improvement in Path Found")
                     #update the edge cost
                     currentNeighborNode.costToExplore = costToExplore
                     currentNeighborNode.totalCost = costToExplore + self.getHeuristic(currentNeighborNode)

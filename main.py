@@ -1,15 +1,3 @@
-#TODO by 2/20:
-# 1) Won't backtrack with obstacles --> I think done
-# 2) Obstacle avoid --> done
-# 3) Make sure you have placed a start and end when hit run -> done
-# 4) if start is (0,0), and place end, start disappears --> I think done
-# 5) Check if for text GUI valid nodes are chosen --> done
-# 6) Pad it so that the grid isn't just in the top left corner --> Done
-# 7) Let user choose weight for WA* --> done
-# 8) Implement the other algorithms (A* and WA*) --> I think done
-# 9) Let user choose four connected or 8 connected -> done
-# 10) Bug with GUI blocked nodes
-
 from Graph import *
 from BFS import *
 from DFS import *
@@ -50,9 +38,6 @@ class GUI():
         self.buttonFrame = Frame(self.win, bg = "grey")
         self.buttonFrame.place(relx=.79, rely=.2)
         self.makeGrid(self.g.nodesTall, self.g.nodesWide)
-        # self.plainFrame = Frame(self.win, bg='red', width=600, height=800)
-        # self.plainFrame.place(relx=.05, rely=.05)
-        # self.plainFrame.bind('<Button-1>', self.test)
         self.speed = None
 
 

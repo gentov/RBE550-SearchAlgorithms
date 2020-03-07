@@ -11,7 +11,7 @@ class WA_Star(A_Star):
     def resetGraph(self):
         self.graph = Graph(nodesTall=self.graph.nodesTall, nodesWide=self.graph.nodesWide)
 
-    #
+    #Since this is weighted A*, this function is overloaded, and applies a weight to the heuristic.
     def getHeuristic(self, neighborNode):
         # get estimated distance to goal
         (row, col) = self.graph.getNodeIndexes(neighborNode.number)
